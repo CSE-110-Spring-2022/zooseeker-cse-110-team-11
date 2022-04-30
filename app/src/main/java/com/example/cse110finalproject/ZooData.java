@@ -1,5 +1,7 @@
 package com.example.cse110finalproject;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -8,6 +10,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.nio.json.JSONImporter;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -37,8 +40,13 @@ public class ZooData {
         public String street;
     }
 
-    public static Map<String, VertexInfo> loadVertexInfoJSON(String path) {
-        InputStream inputStream = MainActivity.class.getClassLoader().getResourceAsStream(path);
+    public static Map<String, VertexInfo> loadVertexInfoJSON(Context context, String path) {
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getAssets().open(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Reader reader = new InputStreamReader(inputStream);
 
         Gson gson = new Gson();

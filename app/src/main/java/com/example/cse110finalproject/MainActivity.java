@@ -5,11 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,11 +24,18 @@ public class MainActivity extends AppCompatActivity {
     SearchFragment searchFragment = new SearchFragment();
     PlanFragment planFragment = new PlanFragment();
     DirectionsFragment directionsFragment = new DirectionsFragment();
+    static List<ZooData.VertexInfo> exhibitsList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Map<String, ZooData.VertexInfo> exhibitsMap =
+            ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
+        exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+        Log.d("json", exhibitsMap.toString());
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.container,searchFragment).commit();
