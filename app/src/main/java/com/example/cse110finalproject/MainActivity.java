@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     PlanFragment planFragment = new PlanFragment();
     DirectionsFragment directionsFragment = new DirectionsFragment();
     static List<ZooData.VertexInfo> exhibitsList;
+    static Map<String, ZooData.VertexInfo> exhibitsMap;
 
 
     @Override
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Map<String, ZooData.VertexInfo> exhibitsMap =
+         exhibitsMap =
             ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
         exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
         Log.d("json", exhibitsMap.toString());
