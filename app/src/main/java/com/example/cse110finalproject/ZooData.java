@@ -29,6 +29,7 @@ public class ZooData {
             @SerializedName("intersection") INTERSECTION
         }
 
+        public long idLong;
         public String id;
         public Kind kind;
         public String name;
