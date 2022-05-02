@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {SearchItem.class}, version = 1)
+@Database(entities = {Places.class}, version = 1)
 public abstract class SearchDatabase extends RoomDatabase {
     private static SearchDatabase singleton = null;
 
@@ -32,7 +32,7 @@ public abstract class SearchDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                            List<SearchItem> searches = SearchItem
+                            List<Places> searches = Places
                                     .loadJSON(context, "demo.json");
                             getSingleton(context).searchItemDao().insertAll(searches);
                         });

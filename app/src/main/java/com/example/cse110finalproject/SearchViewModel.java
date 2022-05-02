@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class SearchViewModel extends AndroidViewModel {
-    private LiveData<List<SearchItem>> searchItems;
+    private LiveData<List<Places>> searchItems;
     private final SearchItemDao searchItemDao;
 
     public SearchViewModel(@NonNull Application application) {
@@ -20,7 +20,7 @@ public class SearchViewModel extends AndroidViewModel {
         searchItemDao = db.searchItemDao();
     }
 
-    public LiveData<List<SearchItem>> getSearchItems() {
+    public LiveData<List<Places>> getSearchItems() {
         if (searchItems == null) {
             loadUsers();
         }
