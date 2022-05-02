@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 public abstract class SearchDatabase extends RoomDatabase {
     private static SearchDatabase singleton = null;
 
-    public abstract SearchItemDao searchItemDao();
+    public abstract SearchPlacesDao searchItemDao();
 
     public synchronized static SearchDatabase getSingleton(Context context) {
         if(singleton == null) {
