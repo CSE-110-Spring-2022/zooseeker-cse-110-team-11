@@ -16,13 +16,13 @@ import com.example.cse110finalproject.ZooData.VertexInfo;
 
 public class PlanViewModel extends AndroidViewModel {
     private LiveData<List<VertexInfo>> searchItems;
-    private final SearchItemDao searchItemDao;
+    private final SearchPlacesDao searchPlacesDao;
 
     public PlanViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
         SearchDatabase db = SearchDatabase.getSingleton(context);
-        searchItemDao = db.searchItemDao();
+        searchPlacesDao = db.searchItemDao();
     }
 
     public LiveData<List<VertexInfo>> getSearchItems() {

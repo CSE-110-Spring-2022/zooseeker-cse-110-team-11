@@ -11,13 +11,13 @@ import java.util.List;
 
 public class SearchViewModel extends AndroidViewModel {
     private LiveData<List<Places>> searchItems;
-    private final SearchItemDao searchItemDao;
+    private final SearchPlacesDao searchPlacesDao;
 
     public SearchViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
         SearchDatabase db = SearchDatabase.getSingleton(context);
-        searchItemDao = db.searchItemDao();
+        searchPlacesDao = db.searchItemDao();
     }
 
     public LiveData<List<Places>> getSearchItems() {
@@ -28,6 +28,6 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     private void loadUsers() {
-        searchItems = searchItemDao.getAllLive();
+        searchItems = searchPlacesDao.getAllLive();
     }
 }

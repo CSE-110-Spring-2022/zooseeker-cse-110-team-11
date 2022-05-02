@@ -10,14 +10,14 @@ import androidx.room.Update;
 import java.util.List;
 
 @Dao
-public interface SearchItemDao {
+public interface SearchPlacesDao {
     @Insert
     long insert(Places searchListItem);
 
-    @Query("SELECT * FROM Places WHERE `id`+:id")
+    @Query("SELECT * FROM `search_places` WHERE `id`=:id")
     Places get(long id);
 
-    @Query("SELECT * FROM Places ORDER BY `order`")
+    @Query("SELECT * FROM `search_places` WHERE `kind`=")
     List<Places> getAll();
 
     @Update
@@ -29,6 +29,6 @@ public interface SearchItemDao {
     @Insert
     List<Long> insertAll(List<Places> places);
 
-    @Query("SELECT * FROM Places ORDER BY `order`")
-    LiveData<List<Places>> getAllLive();
+//    @Query("SELECT * FROM `search_places` ORDER BY `order`")
+//    LiveData<List<Places>> getAllLive();
 }

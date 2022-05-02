@@ -24,25 +24,32 @@ public class Places {
 
     @NonNull
     public String id_name;
-    public ZooData.VertexInfo.Kind kind;
+    public String kind;
     public boolean checked;
     public String name;
 
-    Places(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked) {
+
+
+    Places(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name) {
         this.id_name = id_name;
-        this.kind = kind;
+        this.kind = kind.toString();
         this.checked = checked;
+        this.name = name;
     }
 
-//    @Override
-//    public String toString() {
-//        return "com.example.lab5.TodoListItem{" +
-//                "id=" + id +
-//                ", text='" + text + '\'' +
-//                ", completed=" + completed +
-//                ", order=" + order +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Places{" +
+                "id=" + id +
+                ", id_name='" + id_name + '\'' +
+                ", kind=" + kind +
+                ", checked=" + checked +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+
+
 
 
 }
