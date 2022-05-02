@@ -117,4 +117,24 @@ public class ZooData {
 
         return g;
     }
+
+    public static List<VertexInfo> loadVertexToListJSON(Context context, String path) {
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getAssets().open(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Reader reader = new InputStreamReader(inputStream);
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<VertexInfo>>(){}.getType();
+        List<VertexInfo> zooData = gson.fromJson(reader, type);
+
+
+        return zooData;
+
+    }
+
+
 }

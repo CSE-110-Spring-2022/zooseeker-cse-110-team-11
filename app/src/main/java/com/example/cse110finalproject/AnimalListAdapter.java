@@ -54,8 +54,8 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
 
         public void setSearchItem(Places places){
             this.places = places;
-            this.checkBox.setChecked(places.completed);
-            this.textView.setText(places.text);
+            this.checkBox.setChecked(places.checked);
+            this.textView.setText(places.name);
         }
     }
 }

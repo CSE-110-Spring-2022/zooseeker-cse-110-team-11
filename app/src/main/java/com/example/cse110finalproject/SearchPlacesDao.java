@@ -29,6 +29,6 @@ public interface SearchPlacesDao {
     @Insert
     List<Long> insertAll(List<Places> places);
 
-//    @Query("SELECT * FROM `search_places` ORDER BY `order`")
-//    LiveData<List<Places>> getAllLive();
+    @Query("SELECT * FROM `search_places` ORDER BY `order`")
+    LiveData<List<Places>> getAllLive();
 }

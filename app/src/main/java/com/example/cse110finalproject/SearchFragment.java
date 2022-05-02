@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 public class SearchFragment extends Fragment {
 
     public RecyclerView recyclerView;
@@ -32,7 +34,8 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        adapter.setSearchItem(Places.loadJSON(getContext(),"demo.json"));
+        List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(getContext(), "sample_node_info.json");
+        adapter.setSearchItem(Places.convertVertexListToPlaces(vertices));
         // Inflate the layout for this fragment
         return rootView;
     }
