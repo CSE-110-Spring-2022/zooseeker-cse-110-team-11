@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,11 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView =
                 (ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
-//        List<SearchItem> searches = SearchItem.loadJSON(this,"demo.json");
-//        Log.d("SearchActivity", searches.toString());
+
+        List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(getContext(), "sample_node_info.json");
+//        List<Places> places = Places
+//                .convertVertexListToPlaces(vertices);
+//        Log.d("SearchActivity", places.toString());
 
         SearchViewModel viewModel = new ViewModelProvider(this)
                 .get(SearchViewModel.class);
@@ -34,9 +38,10 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(getContext(), "sample_node_info.json");
         adapter.setSearchItem(Places.convertVertexListToPlaces(vertices));
         // Inflate the layout for this fragment
         return rootView;
+
+
     }
 }

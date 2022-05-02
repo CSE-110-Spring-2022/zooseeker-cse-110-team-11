@@ -27,19 +27,13 @@ public class PlanViewModel extends AndroidViewModel {
 
     public LiveData<List<VertexInfo>> getSearchItems() {
         if (searchItems == null) {
-            //TODO database
-            //loadUsers();
 
-
-            VertexInfo[] example_array = {MainActivity.exhibitsList.get(1)};
-            List<VertexInfo> example_arrlst = new ArrayList<VertexInfo>(Arrays.asList(example_array));
-            searchItems = new MutableLiveData<List<VertexInfo>>(example_arrlst);
         }
         return searchItems;
     }
 
     //TODO Implement the database
-    //private void loadUsers() {
-    //    searchItems = searchItemDao.getAllLive();
-    //}
+    private void loadPlans() {
+        //searchItems = searchItemDao.getAllLive();
+    }
 }

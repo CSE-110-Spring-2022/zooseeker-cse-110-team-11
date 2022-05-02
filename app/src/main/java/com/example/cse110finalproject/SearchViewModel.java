@@ -25,16 +25,12 @@ public class SearchViewModel extends AndroidViewModel {
 
     public LiveData<List<Places>> getSearchItems() {
         if (searchItems == null) {
-            //loadUsers();
-            ZooData.VertexInfo[] example_array = {MainActivity.exhibitsList.get(1)};
-            List<ZooData.VertexInfo> example_arrlst = new ArrayList<ZooData.VertexInfo>(Arrays.asList(example_array));
-            List<Places> places = Places.convertVertexListToPlaces(example_arrlst);
-            searchItems = new MutableLiveData<List<Places>>(places);
+            loadPlaces();
         }
         return searchItems;
     }
 
-//    private void loadUsers() {
-//        searchItems = PlanViewModel.getSearchItems();
-//    }
+    private void loadPlaces() {
+        searchItems = searchPlacesDao.getAllLive();
+    }
 }
