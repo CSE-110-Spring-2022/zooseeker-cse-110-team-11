@@ -30,6 +30,6 @@ public interface SearchPlacesDao {
     @Insert
     List<Long> insertAll(List<Places> places);
 
-    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT'")
+    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
     LiveData<List<Places>> getAllLive();
 }
