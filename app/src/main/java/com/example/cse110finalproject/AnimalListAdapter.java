@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.ViewHolder> {
-    private List<SearchItem> searchItem = Collections.emptyList();
+    private List<Places> places = Collections.emptyList();
 
-    public void setSearchItem(List<SearchItem> searchItem){
-        this.searchItem.clear();
-        this.searchItem = searchItem;
+    public void setSearchItem(List<Places> places){
+        this.places.clear();
+        this.places = places;
         notifyDataSetChanged();
     }
     @NonNull
@@ -29,33 +29,33 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setSearchItem(searchItem.get(position));
+        holder.setSearchItem(places.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return searchItem.size();
+        return places.size();
     }
 
     @Override
     public long getItemId(int position){
-        return searchItem.get(position).id;
+        return places.get(position).id;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private final CheckBox checkBox;
-        private SearchItem searchItem;
+        private Places places;
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             this.textView = itemView.findViewById(R.id.search_items);
             this.checkBox = itemView.findViewById(R.id.added);
         }
 
-        public void setSearchItem(SearchItem searchItem){
-            this.searchItem = searchItem;
-            this.checkBox.setChecked(searchItem.completed);
-            this.textView.setText(searchItem.text);
+        public void setSearchItem(Places places){
+            this.places = places;
+            this.checkBox.setChecked(places.checked);
+            this.textView.setText(places.name);
         }
     }
 }

@@ -11,11 +11,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {SearchItem.class}, version = 1)
+@Database(entities = {Places.class}, version = 1)
 public abstract class SearchDatabase extends RoomDatabase {
     private static SearchDatabase singleton = null;
 
-    public abstract SearchItemDao searchItemDao();
+    public abstract SearchPlacesDao searchPlacesDao();
 
     public synchronized static SearchDatabase getSingleton(Context context) {
         if(singleton == null) {
@@ -32,9 +32,10 @@ public abstract class SearchDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                            List<SearchItem> searches = SearchItem
-                                    .loadJSON(context, "demo.json");
-                            getSingleton(context).searchItemDao().insertAll(searches);
+                            List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(context, "sample_node_info.json");
+                            List<Places> places = Places
+                                    .convertVertexListToPlaces(vertices);
+                            getSingleton(context).searchPlacesDao().insertAll(places);
                         });
                     }
                 })
