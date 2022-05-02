@@ -12,12 +12,12 @@ import java.util.List;
 @Dao
 public interface SearchPlacesDao {
     @Insert
-    long insert(Places searchListItem);
+    long insert(Places places);
 
     @Query("SELECT * FROM `search_places` WHERE `id`=:id")
     Places get(long id);
 
-    @Query("SELECT * FROM `search_places` WHERE `kind`=")
+    @Query("SELECT * FROM `search_places` WHERE `kind`='exhibit'")
     List<Places> getAll();
 
     @Update
@@ -29,6 +29,6 @@ public interface SearchPlacesDao {
     @Insert
     List<Long> insertAll(List<Places> places);
 
-    @Query("SELECT * FROM `search_places` ORDER BY `order`")
+    @Query("SELECT * FROM `search_places`")
     LiveData<List<Places>> getAllLive();
 }
