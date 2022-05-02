@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        adapter.setSearchItem(SearchItem.loadJSON(getContext(),"demo.json"));
+        adapter.setSearchItem(Places.loadJSON(getContext(),"demo.json"));
         // Inflate the layout for this fragment
         return rootView;
     }
