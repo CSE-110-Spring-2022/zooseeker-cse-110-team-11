@@ -27,6 +27,9 @@ public interface SearchPlacesDao {
     @Delete
     int delete(Places places);
 
+    @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' + :keyword + '%' " )
+    List<Places> getSearchResult(String keyword);
+
     @Insert
     List<Long> insertAll(List<Places> places);
 

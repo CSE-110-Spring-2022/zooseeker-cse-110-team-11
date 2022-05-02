@@ -29,7 +29,10 @@ public class SearchViewModel extends AndroidViewModel {
         }
         return searchItems;
     }
-
+    public List<Places> loadSearchResult(String keyword){
+        List<Places> searchResult = searchPlacesDao.getSearchResult(keyword);
+        return searchResult;
+    }
     private void loadPlaces() {
         searchItems = searchPlacesDao.getAllLive();
     }

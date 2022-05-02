@@ -3,6 +3,7 @@ package com.example.cse110finalproject;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -40,5 +41,12 @@ public abstract class SearchDatabase extends RoomDatabase {
                     }
                 })
                 .build();
+    }
+    @VisibleForTesting
+    public static void injectTestDatabase(SearchDatabase testDatabase) {
+        if (singleton != null) {
+            singleton.close();
+        }
+        singleton = testDatabase;
     }
 }
