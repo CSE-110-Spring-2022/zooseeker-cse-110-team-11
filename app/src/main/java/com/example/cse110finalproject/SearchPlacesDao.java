@@ -11,6 +11,7 @@ import java.util.List;
 
 @Dao
 public interface SearchPlacesDao {
+
     @Insert
     long insert(Places places);
 

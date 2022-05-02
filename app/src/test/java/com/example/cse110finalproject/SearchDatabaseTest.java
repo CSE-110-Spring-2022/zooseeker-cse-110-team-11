@@ -1,5 +1,6 @@
 package com.example.cse110finalproject;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import android.content.Context;
@@ -43,6 +44,18 @@ public class SearchDatabaseTest {
         long id2 = dao.insert(place2);
 
         assertNotEquals(id1, id2);
+    }
+
+    @Test
+    public void testGet() {
+        Places place1 = new Places("Pizza time", ZooData.VertexInfo.Kind.EXHIBIT, false, "Pizza");
+        long id = dao.insert(place1);
+
+        Places item = dao.get(id);
+        assertEquals(id, item.id);
+        assertEquals(place1.name, item.name);
+        assertEquals(place1.checked, item.checked);
+        assertEquals(place1.kind, item.kind);
     }
 
 
