@@ -13,6 +13,8 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,7 +26,7 @@ public class Places {
 
     @NonNull
     public String id_name;
-    public String kind;
+    public ZooData.VertexInfo.Kind kind;
     public boolean checked;
     public String name;
 
@@ -32,7 +34,7 @@ public class Places {
 
     Places(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name) {
         this.id_name = id_name;
-        this.kind = kind.toString();
+        this.kind = kind;
         this.checked = checked;
         this.name = name;
     }
@@ -46,6 +48,14 @@ public class Places {
                 ", checked=" + checked +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public static List<Places> convertVertexListToPlaces(List<ZooData.VertexInfo> vertexList) {
+        List<Places> placesList;
+        placesList = vertexList.stream().map((ZooData.VertexInfo vertex)->{
+            return new Places(vertex.id, vertex.kind, false, vertex.name);
+        }).collect(Collectors.toList());
+        return placesList;
     }
 
 

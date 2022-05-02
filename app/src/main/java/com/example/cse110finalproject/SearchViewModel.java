@@ -6,7 +6,10 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SearchViewModel extends AndroidViewModel {
@@ -22,12 +25,16 @@ public class SearchViewModel extends AndroidViewModel {
 
     public LiveData<List<Places>> getSearchItems() {
         if (searchItems == null) {
-            loadUsers();
+            //loadUsers();
+            ZooData.VertexInfo[] example_array = {MainActivity.exhibitsList.get(1)};
+            List<ZooData.VertexInfo> example_arrlst = new ArrayList<ZooData.VertexInfo>(Arrays.asList(example_array));
+            List<Places> places = Places.convertVertexListToPlaces(example_arrlst);
+            searchItems = new MutableLiveData<List<Places>>(places);
         }
         return searchItems;
     }
 
-    private void loadUsers() {
-        searchItems = searchPlacesDao.getAllLive();
-    }
+//    private void loadUsers() {
+//        searchItems = PlanViewModel.getSearchItems();
+//    }
 }
