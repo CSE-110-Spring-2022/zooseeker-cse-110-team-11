@@ -20,7 +20,7 @@ public class SearchViewModel extends AndroidViewModel {
         super(application);
         Context context = getApplication().getApplicationContext();
         SearchDatabase db = SearchDatabase.getSingleton(context);
-        searchPlacesDao = db.searchItemDao();
+        searchPlacesDao = db.searchPlacesDao();
     }
 
     public LiveData<List<Places>> getSearchItems() {

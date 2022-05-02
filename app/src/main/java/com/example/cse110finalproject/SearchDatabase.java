@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 public abstract class SearchDatabase extends RoomDatabase {
     private static SearchDatabase singleton = null;
 
-    public abstract SearchPlacesDao searchItemDao();
+    public abstract SearchPlacesDao searchPlacesDao();
 
     public synchronized static SearchDatabase getSingleton(Context context) {
         if(singleton == null) {
@@ -35,7 +35,7 @@ public abstract class SearchDatabase extends RoomDatabase {
                             List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(context, "sample_node_info.json");
                             List<Places> places = Places
                                     .convertVertexListToPlaces(vertices);
-                            getSingleton(context).searchItemDao().insertAll(places);
+                            getSingleton(context).searchPlacesDao().insertAll(places);
                         });
                     }
                 })
