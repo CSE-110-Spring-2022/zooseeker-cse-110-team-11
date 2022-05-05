@@ -43,6 +43,14 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
         return places.size();
     }
 
+    public void filterList(List<Places> filteredList){
+        places = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public List<Places> getPlaces(){
+        return places;
+    }
     @Override
     public long getItemId(int position){
         return places.get(position).id;
