@@ -15,9 +15,9 @@ import java.util.List;
 import com.example.cse110finalproject.ZooData.VertexInfo;
 
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
-    private List<VertexInfo> searchItem = Collections.emptyList();
+    private List<Places> searchItem = Collections.emptyList();
 
-    public void setSearchItem(List<VertexInfo> searchItem){
+    public void setSearchItem(List<Places> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
@@ -41,18 +41,18 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
 
     @Override
     public long getItemId(int position){
-        return searchItem.get(position).idLong;
+        return searchItem.get(position).id;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
-        private VertexInfo searchItem;
+        private Places searchItem;
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             this.textView = itemView.findViewById(R.id.search_items);
         }
 
-        public void setSearchItem(VertexInfo searchItem){
+        public void setSearchItem(Places searchItem){
             this.searchItem = searchItem;
             this.textView.setText(searchItem.name);
         }

@@ -58,6 +58,10 @@ public class Places {
         return placesList;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
 
 
 

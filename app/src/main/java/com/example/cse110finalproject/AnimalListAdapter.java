@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.ViewHolder> {
     private List<Places> places = Collections.emptyList();
+    private BiConsumer<Places, String> onTextEditedHandler;
 
     public void setSearchItem(List<Places> places){
         this.places.clear();
@@ -32,17 +34,29 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
         holder.setSearchItem(places.get(position));
     }
 
+//    public void setOnTextEditedHandler(BiConsumer<Places, String> onTextEdited){
+//        this.onTextEditedHandler = onTextEdited;
+//    }
+
     @Override
     public int getItemCount() {
         return places.size();
     }
 
+    public void filterList(List<Places> filteredList){
+        places = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public List<Places> getPlaces(){
+        return places;
+    }
     @Override
     public long getItemId(int position){
         return places.get(position).id;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private final CheckBox checkBox;
         private Places places;
@@ -50,6 +64,13 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
             super(itemView);
             this.textView = itemView.findViewById(R.id.search_items);
             this.checkBox = itemView.findViewById(R.id.added);
+
+//            this.textView.setOnFocusChangeListener((view, hasFocus) -> {
+//                if(onTextEditedHandler==null) return;
+//                if(!hasFocus){
+//                    onTextEditedHandler.accept(places, textView.getText().toString());
+//                }
+//            });
         }
 
         public void setSearchItem(Places places){
