@@ -15,7 +15,7 @@ import java.util.List;
 import com.example.cse110finalproject.ZooData.VertexInfo;
 
 public class PlanViewModel extends AndroidViewModel {
-    private LiveData<List<VertexInfo>> searchItems;
+    private LiveData<List<Places>> searchItems;
     private final SearchPlacesDao searchPlacesDao;
 
     public PlanViewModel(@NonNull Application application) {
@@ -25,15 +25,17 @@ public class PlanViewModel extends AndroidViewModel {
         searchPlacesDao = db.searchPlacesDao();
     }
 
-    public LiveData<List<VertexInfo>> getSearchItems() {
+    public LiveData<List<Places>> getSearchItems() {
         if (searchItems == null) {
-
+            //TODO: Load this shit from database
+            //loadPlans();
+            loadPlans();
         }
         return searchItems;
     }
 
     //TODO Implement the database
     private void loadPlans() {
-        //searchItems = searchItemDao.getAllLive();
+        searchItems = searchPlacesDao.getAllLive();
     }
 }

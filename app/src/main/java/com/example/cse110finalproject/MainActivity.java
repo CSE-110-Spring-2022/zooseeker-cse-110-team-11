@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//         exhibitsMap =
-//            ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
-//        exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
-//        Log.d("json", exhibitsMap.toString());
+         exhibitsMap =
+            ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
+        exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+        Log.d("json", exhibitsMap.toString());
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.container,searchFragment).commit();
