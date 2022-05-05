@@ -36,6 +36,6 @@ public class PlanViewModel extends AndroidViewModel {
 
     //TODO Implement the database
     private void loadPlans() {
-        searchItems = searchPlacesDao.getAllLive();
+        searchItems = searchPlacesDao.getSearchItemsLive();
     }
 }
