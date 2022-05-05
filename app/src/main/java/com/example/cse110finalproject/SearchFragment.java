@@ -1,11 +1,13 @@
 package com.example.cse110finalproject;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.core.app.ApplicationProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +19,18 @@ import android.widget.RelativeLayout;
 
 import java.util.List;
 
+
 public class SearchFragment extends Fragment {
     public RecyclerView recyclerView;
+    private SearchViewModel searchViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         ViewGroup rootView =
                 (ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
 
-        List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(getContext(), "sample_node_info.json");
+        //List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(getContext(), "sample_node_info.json");
 //        List<Places> places = Places
 //                .convertVertexListToPlaces(vertices);
 //        Log.d("SearchActivity", places.toString());
@@ -35,12 +40,15 @@ public class SearchFragment extends Fragment {
 
         AnimalListAdapter adapter = new AnimalListAdapter();
         viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+        adapter.setHasStableIds(true);
+
+        //adapter.setOnTextEditedHandler(viewModel::loadSearchResult);
 
         recyclerView = rootView.findViewById(R.id.animal_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        adapter.setSearchItem(Places.convertVertexListToPlaces(vertices));
+        //adapter.setSearchItem(Places.convertVertexListToPlaces(vertices));
 
 //        RelativeLayout rootView = (RelativeLayout) inflater.inflate(R.layout.fragment_search, container, false);
         Button buttonSearch = (Button) rootView.findViewById(R.id.add_search_btn);
@@ -50,7 +58,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 EditText text = (EditText)getView().findViewById(R.id.add_search_text);
                 String content = text.getText().toString();
-                List<Places> searchResult = viewModel.loadSearchResult(content);
+                //List<Places> searchResult = viewModel.loadSearchResult(content);
             }
         });
 
