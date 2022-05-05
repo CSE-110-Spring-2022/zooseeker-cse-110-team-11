@@ -23,7 +23,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
     public RecyclerView recyclerView;
     private SearchViewModel searchViewModel;
-    SearchViewModel viewModel;
+    public SearchViewModel viewModel;
     ViewGroup rootView;
     AnimalListAdapter adapter;
     EditText editText;
@@ -31,27 +31,26 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        buildRecycleView(inflater,container);
 
+        buildRecycleView(inflater,container);
 
         editText = rootView.findViewById(R.id.add_search_text);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("Message", "Testing2");
                 String current = s.toString();
-                filter(current);
-
+                if(current.length()==0){
+                    viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+                }
+                //filter(current);
+                viewModel.loadSearchResult(current).observe(getViewLifecycleOwner(),adapter::filterList);
+                //adapter.filterList(viewModel.loadSearchResult(current));
             }
         });
         // Configure Button
@@ -60,6 +59,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EditText text = (EditText)getView().findViewById(R.id.add_search_text);
+                //filter(text.getText().toString());
                 String content = text.getText().toString();
                 //List<Places> searchResult = viewModel.loadSearchResult(content);
             }
@@ -67,21 +67,20 @@ public class SearchFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
-
-
     }
-    private void filter(String text) {
-        Log.d("Message", "Testing3");
-        List<Places> filteredList = new ArrayList<>();
-        List<Places> allExhibits = new ArrayList(adapter.getPlaces());
-        for (Places item : allExhibits) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
-            }
-        }
 
-        adapter.filterList(filteredList);
-    }
+//    private void filter(String text) {
+//        Log.d("Message", "Testing3");
+//        List<Places> filteredList = new ArrayList<>();
+//        List<Places> allExhibits = new ArrayList(adapter.getPlaces());
+//        for (Places item : allExhibits) {
+//            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
+//                filteredList.add(item);
+//            }
+//        }
+//
+//        adapter.filterList(filteredList);
+//    }
 
     private void buildRecycleView(LayoutInflater inflater,ViewGroup container){
 
@@ -94,6 +93,7 @@ public class SearchFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.animal_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+
     }
 
 

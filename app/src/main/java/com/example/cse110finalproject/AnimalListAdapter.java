@@ -34,9 +34,9 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
         holder.setSearchItem(places.get(position));
     }
 
-    public void setOnTextEditedHandler(BiConsumer<Places, String> onTextEdited){
-        this.onTextEditedHandler = onTextEdited;
-    }
+//    public void setOnTextEditedHandler(BiConsumer<Places, String> onTextEdited){
+//        this.onTextEditedHandler = onTextEdited;
+//    }
 
     @Override
     public int getItemCount() {
@@ -65,11 +65,12 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
             this.textView = itemView.findViewById(R.id.search_items);
             this.checkBox = itemView.findViewById(R.id.added);
 
-            this.textView.setOnFocusChangeListener(((view, hasFocus) -> {
-                if(!hasFocus){
-                    onTextEditedHandler.accept(places, textView.getText().toString());
-                }
-            }));
+//            this.textView.setOnFocusChangeListener((view, hasFocus) -> {
+//                if(onTextEditedHandler==null) return;
+//                if(!hasFocus){
+//                    onTextEditedHandler.accept(places, textView.getText().toString());
+//                }
+//            });
         }
 
         public void setSearchItem(Places places){
