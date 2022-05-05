@@ -15,24 +15,24 @@ public interface SearchPlacesDao {
     @Insert
     long insert(Places places);
 
+    @Insert
+    List<Long> insertAll(List<Places> places);
+
     @Query("SELECT * FROM `search_places` WHERE `id`=:id")
     Places get(long id);
 
     @Query("SELECT * FROM `search_places` WHERE `kind`='exhibit'")
     List<Places> getAll();
 
+    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
+    LiveData<List<Places>> getSearchItemsLive();
+
+    @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' + :keyword + '%' " )
+    List<Places> getSearchResult(String keyword);
+
     @Update
     int update(Places places);
 
     @Delete
     int delete(Places places);
-
-    @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' + :keyword + '%' " )
-    List<Places> getSearchResult(String keyword);
-
-    @Insert
-    List<Long> insertAll(List<Places> places);
-
-    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
-    LiveData<List<Places>> getAllLive();
 }

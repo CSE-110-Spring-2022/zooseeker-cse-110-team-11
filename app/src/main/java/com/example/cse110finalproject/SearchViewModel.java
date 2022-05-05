@@ -25,15 +25,16 @@ public class SearchViewModel extends AndroidViewModel {
 
     public LiveData<List<Places>> getSearchItems() {
         if (searchItems == null) {
-            loadPlaces();
+            loadSearchAnimals();
         }
         return searchItems;
     }
-    public List<Places> loadSearchResult(String keyword){
-        List<Places> searchResult = searchPlacesDao.getSearchResult(keyword);
-        return searchResult;
+
+    private void loadSearchAnimals() {
+        searchItems = searchPlacesDao.getSearchItemsLive();
     }
-    private void loadPlaces() {
-        searchItems = searchPlacesDao.getAllLive();
+
+    public void loadSearchResult(String keyword){
+        searchPlacesDao.getSearchResult(keyword);
     }
 }
