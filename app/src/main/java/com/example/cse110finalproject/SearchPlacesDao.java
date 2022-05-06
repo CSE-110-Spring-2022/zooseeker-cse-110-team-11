@@ -31,7 +31,7 @@ public interface SearchPlacesDao {
     LiveData<List<Places>> getPlannedItemsLive();
 
     @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' + :keyword + '%' " )
-    List<Places> getSearchResult(String keyword);
+    LiveData<List<Places>> getSearchResult(String keyword);
 
     @Update
     int update(Places places);
