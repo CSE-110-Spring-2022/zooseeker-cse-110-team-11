@@ -27,6 +27,9 @@ public interface SearchPlacesDao {
     @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
     LiveData<List<Places>> getSearchItemsLive();
 
+    @Query("SELECT * FROM `search_places` WHERE `checked`=1")
+    LiveData<List<Places>> getPlannedItemsLive();
+
     @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' + :keyword + '%' " )
     List<Places> getSearchResult(String keyword);
 
