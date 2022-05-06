@@ -45,4 +45,11 @@ public class SearchViewModel extends AndroidViewModel {
         }
         return queryItems;
     }
+
+    public void updateCheckbox(Places places) {
+        places.checked = !places.checked;
+        searchPlacesDao.update(places);
+    }
+
+
 }

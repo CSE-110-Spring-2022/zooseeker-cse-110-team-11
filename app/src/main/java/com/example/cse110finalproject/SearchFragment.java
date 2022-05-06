@@ -90,6 +90,7 @@ public class SearchFragment extends Fragment {
         adapter = new AnimalListAdapter();
         viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
         adapter.setHasStableIds(true);
+        adapter.setOnCheckBoxClicked(viewModel::updateCheckbox);
         recyclerView = rootView.findViewById(R.id.animal_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
