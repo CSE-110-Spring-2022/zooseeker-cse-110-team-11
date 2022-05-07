@@ -41,11 +41,7 @@ public class PlanFragment extends Fragment {
         PlanListAdapter adapter = new PlanListAdapter();
         if(getViewLifecycleOwner()==null)
             Log.d("confustion", "what the fuck");
-        ZooData.VertexInfo[] example_array = {MainActivity.exhibitsList.get(1)};
-        List<ZooData.VertexInfo> example_arrlst = new ArrayList<ZooData.VertexInfo>(Arrays.asList(example_array));
-        List<Places> example_places = Places.convertVertexListToPlaces(example_arrlst);
-        adapter.setSearchItem(example_places);
-        viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+        adapter.setSearchItem(viewModel.getSearchItems());
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

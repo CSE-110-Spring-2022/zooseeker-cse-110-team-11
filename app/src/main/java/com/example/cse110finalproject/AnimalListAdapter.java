@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.ViewHolder> {
     private List<Places> places = Collections.emptyList();
     private BiConsumer<Places, String> onTextEditedHandler;
+    private Consumer<Places> onCheckBoxClicked;
 
     public void setSearchItem(List<Places> places){
         this.places.clear();
@@ -27,6 +29,10 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.animal_list,parent,false);
         return new ViewHolder(view);
+    }
+
+    public void setOnCheckBoxClicked(Consumer<Places> onCheckBoxClicked){
+        this.onCheckBoxClicked = onCheckBoxClicked;
     }
 
     @Override
@@ -64,6 +70,11 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
             super(itemView);
             this.textView = itemView.findViewById(R.id.search_items);
             this.checkBox = itemView.findViewById(R.id.added);
+
+            this.checkBox.setOnClickListener(view -> {
+                if(onCheckBoxClicked == null) return;
+                onCheckBoxClicked.accept(places);
+            });
 
 //            this.textView.setOnFocusChangeListener((view, hasFocus) -> {
 //                if(onTextEditedHandler==null) return;

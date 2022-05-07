@@ -1,14 +1,24 @@
 package com.example.cse110finalproject;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.Button;
+import android.widget.EditText;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
+import static org.junit.Assert.*;
+
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+
 
 public class searchTest {
 
@@ -29,7 +39,10 @@ public class searchTest {
     }
 
     @Test
-    public void searchData(){
+    public void testSearchResult(){
+
         String search = "Gorillas";
+
+
     }
 }

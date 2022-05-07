@@ -46,10 +46,10 @@ public class SearchFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 String current = s.toString();
                 if(current.length()==0){
-                    viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+                    adapter.setSearchItem(viewModel.getSearchItems());
                 }
                 //filter(current);
-                viewModel.loadSearchResult(current).observe(getViewLifecycleOwner(),adapter::filterList);
+                adapter.filterList(viewModel.loadSearchResult(current));
                 //adapter.filterList(viewModel.loadSearchResult(current));
             }
         });
@@ -88,8 +88,9 @@ public class SearchFragment extends Fragment {
         viewModel = new ViewModelProvider(this)
                 .get(SearchViewModel.class);
         adapter = new AnimalListAdapter();
-        viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+        adapter.setSearchItem(viewModel.getSearchItems());
         adapter.setHasStableIds(true);
+        adapter.setOnCheckBoxClicked(viewModel::updateCheckbox);
         recyclerView = rootView.findViewById(R.id.animal_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

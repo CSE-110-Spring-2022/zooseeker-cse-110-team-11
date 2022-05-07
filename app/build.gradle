@@ -52,6 +52,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'junit:junit:4.13.2'
 
+    def fragment_version = "1.4.1"
+
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
     //Recommended graph library
     implementation 'org.jgrapht:jgrapht-core:1.5.0'
     implementation group: 'org.jgrapht', name: 'jgrapht-io', version: '1.5.0'
