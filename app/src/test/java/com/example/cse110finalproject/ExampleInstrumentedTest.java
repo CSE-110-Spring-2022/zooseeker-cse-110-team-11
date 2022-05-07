@@ -32,8 +32,20 @@ public class ExampleInstrumentedTest {
         );
 
 
-        assert(1==1);
-        //Then
+    }
 
+    @Test
+    public void testingFragmentPlan() {
+        //Given
+
+        //When
+        FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
+                planFragment -> {
+                    PlanListAdapter planListAdapter = planFragment.adapter;
+                    assert(planListAdapter.searchItem!=null);
+                    assert(planFragment.isVisible());
+                    assert(planFragment.getView().findViewById(R.id.plan_items).isShown());
+                }
+        );
     }
 }
