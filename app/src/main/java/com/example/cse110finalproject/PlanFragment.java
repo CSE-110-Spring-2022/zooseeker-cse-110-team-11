@@ -43,7 +43,7 @@ public class PlanFragment extends Fragment {
         adapter = new PlanListAdapter();
         if(getViewLifecycleOwner()==null)
             Log.d("confustion", "what the fuck");
-        viewModel.getSearchItems().observe(getViewLifecycleOwner(), adapter::setSearchItem);
+        adapter.setSearchItem(viewModel.getSearchItems());
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
