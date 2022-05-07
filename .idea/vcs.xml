@@ -4,6 +4,8 @@
     <option name="branchProtectionPatterns">
       <list>
         <option value="main" />
+        <option value="Plan-Tab-Implementation" />
+        <option value="Search-Implementation" />
       </list>
     </option>
   </component>
