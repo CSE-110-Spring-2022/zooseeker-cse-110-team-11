@@ -30,7 +30,7 @@ public interface SearchPlacesDao {
     @Query("SELECT * FROM `search_places` WHERE `checked`=1")
     LiveData<List<Places>> getPlannedItemsLive();
 
-    @Query("SELECT * FROM `search_places` WHERE `name` LIKE '%' || :keyword || '%' " )
+    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' AND `name` LIKE '%' || :keyword || '%' " )
     LiveData<List<Places>> getSearchResult(String keyword);
 
     @Update
