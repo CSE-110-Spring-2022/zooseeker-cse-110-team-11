@@ -43,7 +43,7 @@ public class DirectionsFragment extends Fragment {
         List<Places> plannedPlaces = viewModel.getAllItems();
         adapter.setDiretionsItems(plannedPlaces);
 
-        recyclerView = rootView.findViewById(R.id.plan_items);
+        recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
