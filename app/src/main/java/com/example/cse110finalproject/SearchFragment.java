@@ -1,23 +1,20 @@
 package com.example.cse110finalproject;
 
-import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class SearchFragment extends Fragment {
@@ -32,8 +29,14 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        buildRecycleView(inflater,container);
+        rootView =(ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
+        return rootView;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        buildRecycleView();
         editText = rootView.findViewById(R.id.add_search_text);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -66,9 +69,7 @@ public class SearchFragment extends Fragment {
         });
 
         // Inflate the layout for this fragment
-        return rootView;
     }
-
 //    private void filter(String text) {
 //        Log.d("Message", "Testing3");
 //        List<Places> filteredList = new ArrayList<>();
@@ -82,9 +83,8 @@ public class SearchFragment extends Fragment {
 //        adapter.filterList(filteredList);
 //    }
 
-    private void buildRecycleView(LayoutInflater inflater,ViewGroup container){
+    private void buildRecycleView(){
 
-        rootView =(ViewGroup) inflater.inflate(R.layout.fragment_search, container, false);
         viewModel = new ViewModelProvider(this)
                 .get(SearchViewModel.class);
         adapter = new AnimalListAdapter();

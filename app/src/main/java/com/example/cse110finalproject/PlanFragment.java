@@ -21,6 +21,8 @@ import java.util.List;
 public class PlanFragment extends Fragment {
 
     public RecyclerView recyclerView;
+    PlanViewModel viewModel;
+    PlanListAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,13 +37,12 @@ public class PlanFragment extends Fragment {
 //        List<SearchItem> searches = SearchItem.loadJSON(this,"demo.json");
 //        Log.d("SearchActivity", searches.toString());
 
-        PlanViewModel viewModel = new ViewModelProvider(this)
+        viewModel = new ViewModelProvider(this)
                 .get(PlanViewModel.class);
 
-        PlanListAdapter adapter = new PlanListAdapter();
-        if(getViewLifecycleOwner()==null)
-            Log.d("confustion", "what the fuck");
-        adapter.setSearchItem(viewModel.getSearchItems());
+        adapter = new PlanListAdapter();
+        List<Places> searchItems = viewModel.getSearchItems();
+        adapter.setSearchItem(searchItems);
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

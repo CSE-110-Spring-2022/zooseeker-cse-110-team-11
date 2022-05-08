@@ -3,7 +3,6 @@ package com.example.cse110finalproject;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 
-import com.example.cse110finalproject.ZooData.VertexInfo;
 
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
-    private List<Places> searchItem = Collections.emptyList();
+    public List<Places> searchItem = Collections.emptyList();
 
     public void setSearchItem(List<Places> searchItem){
         this.searchItem.clear();
