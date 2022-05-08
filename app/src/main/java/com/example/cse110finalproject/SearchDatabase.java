@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 @Database(entities = {Places.class}, version = 1)
 public abstract class SearchDatabase extends RoomDatabase {
-    private static SearchDatabase singleton = null;
+    public static SearchDatabase singleton = null;
 
     public abstract SearchPlacesDao searchPlacesDao();
 
@@ -48,5 +48,13 @@ public abstract class SearchDatabase extends RoomDatabase {
             singleton.close();
         }
         singleton = testDatabase;
+    }
+    @VisibleForTesting
+    public static void releaseSingleton() {
+        if (singleton != null) {
+            synchronized (singleton) {
+                singleton.close();
+            }
+        }
     }
 }
