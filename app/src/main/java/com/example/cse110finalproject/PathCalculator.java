@@ -6,41 +6,54 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PathCalculator {
     Graph<String, IdentifiedWeightedEdge> graph;
     String curr;
-    ArrayList<Places> places;
+    List<Places> places;
     List<String> nVisited;
 
-    PathCalculator(Graph<String, IdentifiedWeightedEdge> graph, String curr, ArrayList<Places> places) {
+    PathCalculator(Graph<String, IdentifiedWeightedEdge> graph, String curr, List<Places> places) {
         this.graph = graph;
         this.curr = curr;
         this.places = places;
+        nVisited = new ArrayList<String>();
         for(Places place : places) {
-            String name = place.getName();
+            String name = place.id_name;
             nVisited.add(name);
         }
     }
 
-    public List<GraphPath<String, IdentifiedWeightedEdge>> calculatePath() {
+    public List<GraphPath<String, IdentifiedWeightedEdge>> calculateAllPaths() {
         List<GraphPath<String, IdentifiedWeightedEdge>> answer = new ArrayList<>();
 
         nVisited.remove(curr);
 
-        while(nVisited.size() > 1) {
-            GraphPath<String, IdentifiedWeightedEdge> minimumP = null;
-            double minDist = Double.MAX_VALUE;
-            for(String dest : nVisited){
-                GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph ,curr, dest);
-                if(minDist > shortest.getWeight()){
-                    minDist = shortest.getWeight();
-                    minimumP = shortest;
-                }
-            }
-            answer.add(minimumP);
+
+        for(String dest : nVisited){
+            GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph ,curr, dest);
+            answer.add(shortest);
         }
 
         return answer;
+    }
+
+    public GraphPath<String, IdentifiedWeightedEdge> smallestPath(){
+        GraphPath<String, IdentifiedWeightedEdge> smallestPathResult;
+        List<GraphPath<String, IdentifiedWeightedEdge>> allPaths = calculateAllPaths();
+        allPaths.stream().collect(Collectors.toMap((graph) -> graph.getWeight(), graph->graph));
+        smallestPathResult = allPaths.stream().min((graph1, graph2) -> {
+            if(graph1.getWeight() < graph2.getWeight()) {
+                return -1;
+            } else if(graph1.getWeight() > graph2.getWeight()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }).get();
+
+        return smallestPathResult;
     }
 }
