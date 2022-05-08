@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.AndroidViewModel;
 
 import java.util.List;
@@ -11,12 +12,14 @@ import java.util.List;
 public class SearchViewModel extends AndroidViewModel {
     private List<Places> searchItems;
     private List<Places> queryItems;
-    private final SearchPlacesDao searchPlacesDao;
+    final SearchPlacesDao searchPlacesDao;
+    @VisibleForTesting
+    final SearchDatabase db;
 
     public SearchViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
-        SearchDatabase db = SearchDatabase.getSingleton(context);
+        db = SearchDatabase.getSingleton(context);
         searchPlacesDao = db.searchPlacesDao();
     }
 
