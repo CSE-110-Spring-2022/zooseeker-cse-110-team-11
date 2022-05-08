@@ -25,13 +25,13 @@ public interface SearchPlacesDao {
     List<Places> getAll();
 
     @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
-    LiveData<List<Places>> getSearchItemsLive();
+    List<Places> getAllPlaces();
 
     @Query("SELECT * FROM `search_places` WHERE `checked`=1")
-    LiveData<List<Places>> getPlannedItemsLive();
+    List<Places> getPlannedPlaces();
 
     @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' AND `name` LIKE '%' || :keyword || '%' " )
-    LiveData<List<Places>> getSearchResult(String keyword);
+    List<Places> getSearchResult(String keyword);
 
     @Update
     int update(Places places);
