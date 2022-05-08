@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 
-public class DirectionAdapter extends RecyclerView.Adapter<DirectionAdapter.ViewHolder> {
+public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
     private List<Places> searchItem = Collections.emptyList();
 
-    public void setSearchItem(List<Places> searchItem){
+    public void setDiretionsItems(List<Places> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
