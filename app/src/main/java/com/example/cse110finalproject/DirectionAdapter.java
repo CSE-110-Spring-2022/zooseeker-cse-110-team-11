@@ -20,8 +20,6 @@ public class DirectionAdapter extends RecyclerView.Adapter<DirectionAdapter.View
         notifyDataSetChanged();
     }
 
-    public
-
 
     @NonNull
     @Override
