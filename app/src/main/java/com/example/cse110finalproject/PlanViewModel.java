@@ -4,18 +4,23 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.AndroidViewModel;
 
 import java.util.List;
 
 public class PlanViewModel extends AndroidViewModel {
+    @VisibleForTesting
+    public final SearchPlacesDao searchPlacesDao;
     private List<Places> searchItems;
-    private final SearchPlacesDao searchPlacesDao;
+    @VisibleForTesting
+    final SearchDatabase db;
+
 
     public PlanViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
-        SearchDatabase db = SearchDatabase.getSingleton(context);
+        db = SearchDatabase.getSingleton(context);
         searchPlacesDao = db.searchPlacesDao();
     }
 
