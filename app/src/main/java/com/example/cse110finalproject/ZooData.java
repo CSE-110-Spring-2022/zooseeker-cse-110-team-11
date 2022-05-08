@@ -68,7 +68,7 @@ public class ZooData {
         return indexedZooData;
     }
 
-    public static Map<String, EdgeInfo> loadEdgeInfoJSON(Context context, String path) {
+    public static Map<String, String> loadEdgeIdToStreetJSON(Context context, String path) {
         InputStream inputStream = null;
         try {
             inputStream = context.getAssets().open(path);
@@ -81,9 +81,9 @@ public class ZooData {
         Type type = new TypeToken<List<EdgeInfo>>(){}.getType();
         List<EdgeInfo> zooData = gson.fromJson(reader, type);
 
-        Map<String, EdgeInfo> indexedZooData = zooData
+        Map<String, String> indexedZooData = zooData
                 .stream()
-                .collect(Collectors.toMap(v -> v.id, datum -> datum));
+                .collect(Collectors.toMap(v -> v.id, datum -> datum.street));
 
         return indexedZooData;
     }

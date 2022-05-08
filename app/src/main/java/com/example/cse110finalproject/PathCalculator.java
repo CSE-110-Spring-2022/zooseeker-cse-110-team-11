@@ -29,9 +29,6 @@ public class PathCalculator {
     public List<GraphPath<String, IdentifiedWeightedEdge>> calculateAllPaths() {
         List<GraphPath<String, IdentifiedWeightedEdge>> answer = new ArrayList<>();
 
-        nVisited.remove(curr);
-
-
         for(String dest : nVisited){
             GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph ,curr, dest);
             answer.add(shortest);

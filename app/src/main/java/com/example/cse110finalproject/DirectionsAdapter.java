@@ -12,9 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
-    private List<Places> searchItem = Collections.emptyList();
+    private List<EdgeDispInfo> searchItem = Collections.emptyList();
 
-    public void setDiretionsItems(List<Places> searchItem){
+    public void setDiretionsItems(List<EdgeDispInfo> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
@@ -25,6 +25,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.planned_exhibit_list,parent,false);
+        this.setHasStableIds(true);
         return new ViewHolder(view);
     }
 
@@ -45,16 +46,22 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
-        private Places searchItem;
+        private EdgeDispInfo searchItem;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
-            this.textView = itemView.findViewById(R.id.search_items);
+            this.textView = itemView.findViewById(R.id.direction_textView);
         }
 
-        public void setSearchItem(Places searchItem){
+        public void setSearchItem(EdgeDispInfo searchItem){
             this.searchItem = searchItem;
-            this.textView.setText(searchItem.name);
+            String directionStr;
+            directionStr = String.format("From %, travel % meters along % to %",
+                    searchItem.start,
+                    searchItem.distance,
+                    searchItem.streetName,
+                    searchItem.end);
+            this.textView.setText(directionStr);
         }
 
     }

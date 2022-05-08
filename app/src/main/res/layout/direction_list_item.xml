@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <TextView
-        android:id="@+id/direction_item"
+        android:id="@+id/direction_textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
