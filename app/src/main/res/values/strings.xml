@@ -2,4 +2,9 @@
     <string name="app_name">SD ZooKeeper</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="currentexhibit">currentExhibit</string>
+    <string name="proceed_from_bird_street_down_feather_way_300_feet_to_your_right">Proceed from Bird Street down Feather Way, 300 feet to your right.</string>
+    <string name="directions_to_parrots">Directions to Parrots</string>
+    <string name="arrow1">arrow1</string>
+    <string name="bird_street">Bird Street</string>
 </resources>
