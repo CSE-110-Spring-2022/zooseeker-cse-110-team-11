@@ -1,6 +1,7 @@
 package com.example.cse110finalproject;
 
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -58,6 +59,9 @@ public class PlanFragmentsInsrumentedTest {
                     assert(planListAdapter.searchItem!=null);
                     assert(planFragment.isVisible());
                     assert(planFragment.getView().findViewById(R.id.plan_items).isShown());
+                    TextView numPlanned = planFragment.getView().findViewById(R.id.num_exhibits_textview);
+                    assert(numPlanned.getText().equals(String.valueOf(planListAdapter.getItemCount())));
+
                     planFragment.viewModel.db.releaseSingleton();
                     planFragment.viewModel.db.close();
                 }

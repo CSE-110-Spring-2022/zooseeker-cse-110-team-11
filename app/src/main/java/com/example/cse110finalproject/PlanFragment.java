@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.jgrapht.Graph;
 
@@ -50,5 +51,7 @@ public class PlanFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
+        TextView counter = rootView.findViewById(R.id.num_exhibits_textview);
+        counter.setText(String.valueOf(adapter.getItemCount()));
     }
 }
