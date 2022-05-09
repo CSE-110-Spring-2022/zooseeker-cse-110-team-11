@@ -88,7 +88,7 @@ public class DirectionsFragment extends Fragment {
             Button nextbtn = getView().findViewById(R.id.next_button);
             nextbtn.setClickable(false);
         }
-        unvisited.remove(current);
+        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
         PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
         GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
         List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
