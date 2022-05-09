@@ -36,6 +36,8 @@ public class DirectionsFragment extends Fragment {
     Places entranceExitPlace;
     private Graph<String, IdentifiedWeightedEdge> graph;
     private List<Places> unvisited;
+    private List<List<IdentifiedWeightedEdge>> optimalPath;
+    private int currentStep;
 
 
     @Override
@@ -75,6 +77,10 @@ public class DirectionsFragment extends Fragment {
         current = entranceExitPlace;
         unvisited.add(entranceExitPlace);
 
+        PathCalculator calculator = new PathCalculator(graph, entranceExitPlace.id_name, unvisited, entranceExitPlace);
+        optimalPath = calculator.getOptimalPath();
+        currentStep = 0;
+
 
         Button nextbtn = getView().findViewById(R.id.next_button);
         nextbtn.setOnClickListener(view1 -> nextDirections());
@@ -83,16 +89,19 @@ public class DirectionsFragment extends Fragment {
     }
 
     public void nextDirections() {
-        if(unvisited.size()==1) {
-            unvisited.add(entranceExitPlace);
+        if(currentStep==optimalPath.size()-1) {
             Button nextbtn = getView().findViewById(R.id.next_button);
             nextbtn.setClickable(false);
         }
-        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-        PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
-        current = placesIdMap.get(path.getEndVertex());
+        currentStep++;
+        List<IdentifiedWeightedEdge> currEdges = optimalPath.get(currentStep);
+        List<EdgeDispInfo> edgeDispInfoList = currEdges.stream().map(edge -> {
+            return new EdgeDispInfo(
+                    placesIdMap.get(edge.getSourceStr()).name,
+                    placesIdMap.get(edge.getTargetStr()).name,
+                    streetIdMap.get(edge.getId()),
+                    String.valueOf(edge.getWeight()));
+        }).collect(Collectors.toList());
         adapter.setDiretionsItems(edgeDispInfoList);
     }
 
