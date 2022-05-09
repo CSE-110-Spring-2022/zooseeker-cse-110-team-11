@@ -26,8 +26,6 @@ public class DirectionsViewModel extends AndroidViewModel {
 
     public List<Places> getAllItems() {
         if (searchItems == null) {
-            //TODO: Load this shit from database
-            //loadPlans();
             loadPlans();
         }
         return searchItems;
