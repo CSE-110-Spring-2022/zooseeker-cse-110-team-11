@@ -89,11 +89,11 @@ public class DirectionsFragment extends Fragment {
     }
 
     public void nextDirections() {
+        currentStep++;
         if(currentStep==optimalPath.size()-1) {
             Button nextbtn = getView().findViewById(R.id.next_button);
             nextbtn.setClickable(false);
         }
-        currentStep++;
         List<IdentifiedWeightedEdge> currEdges = optimalPath.get(currentStep);
         List<EdgeDispInfo> edgeDispInfoList = currEdges.stream().map(edge -> {
             return new EdgeDispInfo(
