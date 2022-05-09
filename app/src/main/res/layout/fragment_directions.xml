@@ -11,25 +11,26 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/directionsRecyclerView"
-        android:layout_width="417dp"
-        android:layout_height="598dp"
+        android:layout_width="415dp"
+        android:layout_height="549dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="92dp"
+        android:layout_height="60dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="35dp"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.459" />
 </androidx.constraintlayout.widget.ConstraintLayout>

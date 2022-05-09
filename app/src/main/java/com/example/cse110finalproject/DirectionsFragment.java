@@ -48,40 +48,38 @@ public class DirectionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View rootView = (ViewGroup) getView();
-//        List<SearchItem> searches = SearchItem.loadJSON(this,"demo.json");
-//        Log.d("SearchActivity", searches.toString());
-        Context context = getContext();
-
-        viewModel = new ViewModelProvider(this)
-                .get(DirectionsViewModel.class);
-
-        adapter = new DirectionsAdapter();
-        List<Places> plannedPlaces = viewModel.getAllItems();
-        unvisited = plannedPlaces;
-
-        recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-
-        Map<String, ZooData.VertexInfo> exhibitsMap =
-                ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
-        List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
-        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "sample_edge_info.json");
-        graph = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
-
-        List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
-        placesIdMap = placesList.stream().collect(Collectors.toMap(place->place.id_name, place->place));
-        //Set the first current exhibit as the entrance gate
-        entranceExitPlace = placesList.stream().filter(places -> places.kind==ZooData.VertexInfo.Kind.GATE).findFirst().get();
-        current = entranceExitPlace;
-        unvisited.add(entranceExitPlace);
-
-
-        Button nextbtn = getView().findViewById(R.id.next_button);
-        nextbtn.setOnClickListener(view1 -> nextDirections());
-
-        nextDirections();
+//        View rootView = (ViewGroup) getView();
+//        Context context = getContext();
+//
+//        viewModel = new ViewModelProvider(this)
+//                .get(DirectionsViewModel.class);
+//
+//        adapter = new DirectionsAdapter();
+//        List<Places> plannedPlaces = viewModel.getAllItems();
+//        unvisited = plannedPlaces;
+//
+//        recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        recyclerView.setAdapter(adapter);
+//
+//        Map<String, ZooData.VertexInfo> exhibitsMap =
+//                ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+//        List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+//        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "sample_edge_info.json");
+//        graph = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+//
+//        List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
+//        placesIdMap = placesList.stream().collect(Collectors.toMap(place->place.id_name, place->place));
+//        //Set the first current exhibit as the entrance gate
+//        entranceExitPlace = placesList.stream().filter(places -> places.kind==ZooData.VertexInfo.Kind.GATE).findFirst().get();
+//        current = entranceExitPlace;
+//        unvisited.add(entranceExitPlace);
+//
+//
+//        Button nextbtn = getView().findViewById(R.id.next_button);
+//        nextbtn.setOnClickListener(view1 -> nextDirections());
+//
+//        nextDirections();
     }
 
     public void nextDirections() {

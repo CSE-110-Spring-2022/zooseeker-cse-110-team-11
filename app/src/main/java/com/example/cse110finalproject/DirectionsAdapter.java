@@ -24,7 +24,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.planned_exhibit_list,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.direction_list_item,parent,false);
         this.setHasStableIds(true);
         return new ViewHolder(view);
     }
