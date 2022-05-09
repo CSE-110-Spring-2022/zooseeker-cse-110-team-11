@@ -43,6 +43,6 @@ public class PathFinderTest {
         GraphPath<String, IdentifiedWeightedEdge> smallestPath=calculator.smallestPath();
 
 
-        assertEquals((double) 300, smallestPath.getWeight());
+        assertEquals( 300.0, smallestPath.getWeight(),0.0);
     }
 }
