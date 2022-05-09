@@ -44,23 +44,22 @@ public class PathCalculator {
     public void calculateAllPaths(String currentNode, List<String> needToVisit, List<List<IdentifiedWeightedEdge>> edgesSoFar) {
 
         if(needToVisit.isEmpty()) {
-            for (String dest : nVisited) {
-                GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph, curr, entranceNode.id_name);
-                List<IdentifiedWeightedEdge> edge = shortest.getEdgeList();
-                List<List<IdentifiedWeightedEdge>> edgesSoFarCopy = edgesSoFar.stream().collect(Collectors.toList());
-                edgesSoFarCopy.add(edge);
-                allPaths.add(edgesSoFarCopy);
-            }
-        }
-
-        //Remove current from list
-        needToVisit = needToVisit.stream().filter(id_name -> id_name.equals(currentNode)).collect(Collectors.toList());
-        for (String dest : nVisited) {
-            GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph, curr, dest);
+            GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph, currentNode, entranceNode.id_name);
             List<IdentifiedWeightedEdge> edge = shortest.getEdgeList();
             List<List<IdentifiedWeightedEdge>> edgesSoFarCopy = edgesSoFar.stream().collect(Collectors.toList());
             edgesSoFarCopy.add(edge);
             allPaths.add(edgesSoFarCopy);
+        }
+
+        //Remove current from list
+        needToVisit = needToVisit.stream().filter(id_name -> !id_name.equals(currentNode)).collect(Collectors.toList());
+        for (String dest : needToVisit) {
+            GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph, currentNode, dest);
+            List<IdentifiedWeightedEdge> edge = shortest.getEdgeList();
+            List<List<IdentifiedWeightedEdge>> edgesSoFarCopy = edgesSoFar.stream().collect(Collectors.toList());
+            edgesSoFarCopy.add(edge);
+            List<String> needToVisitRemoved = needToVisit.stream().filter(idname->!idname.equals(dest)).collect(Collectors.toList());
+            calculateAllPaths(dest, needToVisitRemoved, edgesSoFarCopy);
         }
     }
 
