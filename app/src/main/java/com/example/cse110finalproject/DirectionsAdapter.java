@@ -25,7 +25,6 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.direction_list_item,parent,false);
-        this.setHasStableIds(true);
         return new ViewHolder(view);
     }
 
@@ -56,7 +55,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         public void setSearchItem(EdgeDispInfo searchItem){
             this.searchItem = searchItem;
             String directionStr;
-            directionStr = String.format("From %, travel % meters along % to %",
+            directionStr = String.format("From %s, travel %s meters along %s to %s",
                     searchItem.start,
                     searchItem.distance,
                     searchItem.streetName,
