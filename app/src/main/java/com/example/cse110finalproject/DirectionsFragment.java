@@ -38,12 +38,26 @@ public class DirectionsFragment extends Fragment {
     private List<Places> unvisited;
 
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return Returns the view of the fragment, not currently visible
+     * not all components are initialized at this point
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_directions, container, false);
     }
+
+    /**
+     * @param view
+     * @param savedInstanceState
+     *
+     * In this method, the view is created and we can access all components contained in fragment
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -55,20 +69,29 @@ public class DirectionsFragment extends Fragment {
                 .get(DirectionsViewModel.class);
 
         adapter = new DirectionsAdapter();
-        List<Places> plannedPlaces = viewModel.getAllItems();
+        List<Places> plannedPlaces = viewModel.getPlannedPlaces();
         unvisited = plannedPlaces;
 
         recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
+        //Load add locations from the json file using helper code
         Map<String, ZooData.VertexInfo> exhibitsMap =
                 ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+
+        //Just the vertex values, from the map
+        //We need this to get loaction names from ids
         List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+
+        //We need this in order to get the street names from the edge_ids
         streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "sample_edge_info.json");
         graph = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
 
+        //Get a list of places from the vertex list
         List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
+
+        //Create map of name_id -> place
         placesIdMap = placesList.stream().collect(Collectors.toMap(place->place.id_name, place->place));
         //Set the first current exhibit as the entrance gate
         entranceExitPlace = placesList.stream().filter(places -> places.kind==ZooData.VertexInfo.Kind.GATE).findFirst().get();

@@ -24,7 +24,7 @@ public class DirectionsViewModel extends AndroidViewModel {
         searchPlacesDao = db.searchPlacesDao();
     }
 
-    public List<Places> getAllItems() {
+    public List<Places> getPlannedPlaces() {
         if (searchItems == null) {
             loadPlans();
         }
