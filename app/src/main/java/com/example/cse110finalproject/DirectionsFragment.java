@@ -99,12 +99,17 @@ public class DirectionsFragment extends Fragment {
         unvisited.add(entranceExitPlace);
 
 
+        //Setup next button
         Button nextbtn = getView().findViewById(R.id.next_button);
         nextbtn.setOnClickListener(view1 -> nextDirections());
 
+        //Start showing directions
         nextDirections();
     }
 
+    /**
+     * Changes screen to display directions to the next planned exhibit
+     */
     public void nextDirections() {
         if(unvisited.size()==1) {
             unvisited.add(entranceExitPlace);

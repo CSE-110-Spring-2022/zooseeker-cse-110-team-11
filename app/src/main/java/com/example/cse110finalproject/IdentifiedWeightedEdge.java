@@ -10,6 +10,8 @@ import org.jgrapht.nio.Attribute;
  */
 public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
     private String id = null;
+    Object source;
+    Object target;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
