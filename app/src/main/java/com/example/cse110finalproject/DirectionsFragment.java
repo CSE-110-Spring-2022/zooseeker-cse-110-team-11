@@ -124,6 +124,11 @@ public class DirectionsFragment extends Fragment {
         adapter.setDiretionsItems(edgeDispInfoList);
     }
 
+    /**
+     * TODO: Fix this to keep proper track of source & destinations
+     * @param path
+     * @return
+     */
     public List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path) {
         return path.getEdgeList().stream().map(edge -> {
             return new EdgeDispInfo(
@@ -132,6 +137,7 @@ public class DirectionsFragment extends Fragment {
                     streetIdMap.get(edge.getId()),
                     String.valueOf(edge.getWeight()));
         }).collect(Collectors.toList());
+
 
     }
 

@@ -23,10 +23,8 @@ public class SearchViewModel extends AndroidViewModel {
         searchPlacesDao = db.searchPlacesDao();
     }
 
-    public List<Places> getSearchItems() {
-        if (searchItems == null) {
-            loadAllAnimals();
-        }
+    public List<Places> getAllPlaces() {
+        loadAllAnimals();
         return searchItems;
     }
 

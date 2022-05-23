@@ -67,7 +67,7 @@ public class SearchFragment extends Fragment {
                 String current = s.toString();
                 //If the search bar is empty, we show all items
                 if(current.length()==0){
-                    adapter.setSearchItem(viewModel.getSearchItems());
+                    adapter.setSearchItem(viewModel.getAllPlaces());
                     return;
                 }
                 //TODO: Rename filterList() method
@@ -93,7 +93,7 @@ public class SearchFragment extends Fragment {
         viewModel = new ViewModelProvider(this)
                 .get(SearchViewModel.class);
         adapter = new AnimalListAdapter();
-        adapter.setSearchItem(viewModel.getSearchItems());
+        adapter.setSearchItem(viewModel.getAllPlaces());
         adapter.setHasStableIds(true);
         adapter.setOnCheckBoxClicked(viewModel::updateCheckbox);
         recyclerView = rootView.findViewById(R.id.animal_items);
