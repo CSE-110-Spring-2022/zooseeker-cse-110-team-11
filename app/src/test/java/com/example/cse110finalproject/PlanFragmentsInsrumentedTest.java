@@ -40,6 +40,18 @@ public class PlanFragmentsInsrumentedTest {
     @Test
     public void testingFragmentPlan() {
 
+        FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
+                searchFragment -> {
+                    EditText searchBar = searchFragment.getView().findViewById(R.id.add_search_text);
+                    AnimalListAdapter searchAdapter = searchFragment.adapter;
+                    synchronized (searchBar) {
+                        searchBar.setText("Gor");
+                    }
+                    assert(searchAdapter.getPlaces().get(0).id_name.contains("gor"));
+                    searchFragment.viewModel.db.close();
+                }
+        );
+        scenario.close();
         //When
         FragmentScenario<PlanFragment> fragmentScenario = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
@@ -54,22 +66,6 @@ public class PlanFragmentsInsrumentedTest {
                     planFragment.viewModel.db.close();
                 }
         );
-        FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
-                planFragment -> {
-                    EditText searchBar = planFragment.getView().findViewById(R.id.add_search_text);
-                    AnimalListAdapter searchAdapter = planFragment.adapter;
-                    synchronized (searchBar) {
-                        searchBar.setText("Gor");
-                    }
-                    assert(searchAdapter.getPlaces().get(0).id_name.contains("gor"));
-                    testDb=planFragment.viewModel.db;
-                    planFragment.viewModel.db.releaseSingleton();
-                    synchronized (planFragment.viewModel.db) {
-                        planFragment.viewModel.db.close();
-                    }
-                }
-        );
-        scenario.close();
 
         FragmentScenario<DirectionsFragment> directionsscenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
                 directionsFragment -> {

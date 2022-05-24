@@ -104,7 +104,7 @@ public class DirectionsFragment extends Fragment {
         nextbtn.setOnClickListener(view1 -> nextDirections());
 
         //Start showing directions
-        if(unvisited.size()>0) {
+        if(unvisited.size()>1) {
             nextDirections();
         }
     }
