@@ -26,14 +26,11 @@ public class PlanViewModel extends AndroidViewModel {
 
     public List<Places> getPlannedPlaces() {
         if (searchItems == null) {
-            //TODO: Load this shit from database
-            //loadPlans();
             loadPlans();
         }
         return searchItems;
     }
 
-    //TODO Implement the database
     private void loadPlans() {
         searchItems = searchPlacesDao.getPlannedPlaces();
     }

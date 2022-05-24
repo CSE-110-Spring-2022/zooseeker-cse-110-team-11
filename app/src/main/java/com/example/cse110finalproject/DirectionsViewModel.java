@@ -31,7 +31,6 @@ public class DirectionsViewModel extends AndroidViewModel {
         return searchItems;
     }
 
-    //TODO Implement the database
     private void loadPlans() {
         searchItems = searchPlacesDao.getPlannedPlaces();
     }

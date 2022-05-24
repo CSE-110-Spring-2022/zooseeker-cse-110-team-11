@@ -19,7 +19,7 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
     private BiConsumer<Places, String> onTextEditedHandler;
     private Consumer<Places> onCheckBoxClicked;
 
-    public void setSearchItem(List<Places> places){
+    public void setSearchItems(List<Places> places){
         this.places.clear();
         this.places = places;
         notifyDataSetChanged();
@@ -49,7 +49,7 @@ public class AnimalListAdapter extends RecyclerView.Adapter<AnimalListAdapter.Vi
         return places.size();
     }
 
-    public void filterList(List<Places> filteredList){
+    public void setFilteredList(List<Places> filteredList){
         places = filteredList;
         notifyDataSetChanged();
     }
