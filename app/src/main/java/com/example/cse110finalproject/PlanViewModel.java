@@ -12,7 +12,7 @@ import java.util.List;
 public class PlanViewModel extends AndroidViewModel {
     @VisibleForTesting
     public final SearchPlacesDao searchPlacesDao;
-    private List<Places> searchItems;
+    private List<Places> plannedPlacesList;
     @VisibleForTesting
     final SearchDatabase db;
 
@@ -25,13 +25,13 @@ public class PlanViewModel extends AndroidViewModel {
     }
 
     public List<Places> getPlannedPlaces() {
-        if (searchItems == null) {
+        if (plannedPlacesList == null) {
             loadPlans();
         }
-        return searchItems;
+        return plannedPlacesList;
     }
 
     private void loadPlans() {
-        searchItems = searchPlacesDao.getPlannedPlaces();
+        plannedPlacesList = searchPlacesDao.getPlannedPlaces();
     }
 }
