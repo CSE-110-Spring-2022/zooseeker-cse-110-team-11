@@ -35,7 +35,7 @@ public class DirectionsFragment extends Fragment {
     Places current;
     Places entranceExitPlace;
     private Graph<String, IdentifiedWeightedEdge> graph;
-    private List<Places> unvisited;
+    List<Places> unvisited;
 
 
     /**
@@ -104,7 +104,9 @@ public class DirectionsFragment extends Fragment {
         nextbtn.setOnClickListener(view1 -> nextDirections());
 
         //Start showing directions
-        nextDirections();
+        if(unvisited.size()>0) {
+            nextDirections();
+        }
     }
 
     /**

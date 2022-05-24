@@ -1,14 +1,21 @@
 package com.example.cse110finalproject;
 
+import android.content.Context;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.jgrapht.Graph;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.rules.DisableOnDebug;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -48,6 +55,8 @@ public class PlanFragmentsInsrumentedTest {
 //
 //
 //    }
+
+
     @Test
     public void testingFragmentPlan() {
         //Given
@@ -66,6 +75,46 @@ public class PlanFragmentsInsrumentedTest {
                     planFragment.viewModel.db.close();
                 }
         );
+        FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
+                planFragment -> {
+                    EditText searchBar = planFragment.getView().findViewById(R.id.add_search_text);
+                    AnimalListAdapter searchAdapter = planFragment.adapter;
+                    synchronized (searchBar) {
+                        searchBar.setText("Gor");
+                    }
+                    assert(searchAdapter.getPlaces().get(0).id_name.contains("gor"));
+                    testDb=planFragment.viewModel.db;
+                    planFragment.viewModel.db.releaseSingleton();
+                    synchronized (planFragment.viewModel.db) {
+                        planFragment.viewModel.db.close();
+                    }
+                }
+        );
+        scenario.close();
+
+        FragmentScenario<DirectionsFragment> directionsscenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
+                directionsFragment -> {
+                    Context context = directionsFragment.getContext();
+                    Map<String, ZooData.VertexInfo> exhibitsMap =
+                            ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                    List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+
+                    List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
+
+                    List<Places> wantToVisit = placesList.subList(1,3);
+
+
+                    directionsFragment.unvisited = wantToVisit;
+
+                    directionsFragment.nextDirections();
+
+
+
+
+                }
+        );
+
     }
 
     @After
