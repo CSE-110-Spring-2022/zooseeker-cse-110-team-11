@@ -35,31 +35,10 @@ public class PlanFragmentsInsrumentedTest {
 //
 //        placesListItemDao = testDb.searchPlacesDao();
 //    }
-//    @Test
-//    public void testingFragmentSearch() {
-//        //When
-//        FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
-//                planFragment -> {
-//                    EditText searchBar = planFragment.getView().findViewById(R.id.add_search_text);
-//                    AnimalListAdapter searchAdapter = planFragment.adapter;
-//                    searchBar.setText("Gor");
-//                    assert(searchAdapter.getPlaces().get(0).id_name.contains("gor"));
-//                    testDb=planFragment.viewModel.db;
-//                    planFragment.viewModel.db.releaseSingleton();
-//                    synchronized (planFragment.viewModel.db) {
-//                        planFragment.viewModel.db.close();
-//                    }
-//                }
-//        );
-//        scenario.close();
-//
-//
-//    }
 
 
     @Test
     public void testingFragmentPlan() {
-        //Given
 
         //When
         FragmentScenario<PlanFragment> fragmentScenario = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
@@ -108,32 +87,9 @@ public class PlanFragmentsInsrumentedTest {
                     directionsFragment.unvisited = wantToVisit;
 
                     directionsFragment.nextDirections();
-
-
-
-
                 }
         );
 
     }
 
-    @After
-    public void closeResources() {
-
-
-    }
-
-//    @Test //    public void testingFragmentPlan() {
-//        //Given
-//
-//        //When
-//        FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
-//                planFragment -> {
-//                    PlanListAdapter planListAdapter = planFragment.adapter;
-//                    assert(planListAdapter.searchItem!=null);
-//                    assert(planFragment.isVisible());
-//                    assert(planFragment.getView().findViewById(R.id.plan_items).isShown());
-//                }
-//        );
-//    }
 }
