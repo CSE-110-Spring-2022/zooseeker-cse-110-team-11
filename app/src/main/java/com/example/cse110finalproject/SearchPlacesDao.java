@@ -24,7 +24,8 @@ public interface SearchPlacesDao {
     @Query("SELECT * FROM `search_places` WHERE `kind`='exhibit'")
     List<Places> getAll();
 
-    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `id_name` ASC")
+    //Show all exhibits
+    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' ORDER BY `name` ASC")
     List<Places> getAllPlaces();
 
     @Query("SELECT * FROM `search_places` WHERE `checked`=1")

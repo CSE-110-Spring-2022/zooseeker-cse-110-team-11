@@ -24,14 +24,13 @@ public class DirectionsViewModel extends AndroidViewModel {
         searchPlacesDao = db.searchPlacesDao();
     }
 
-    public List<Places> getAllItems() {
+    public List<Places> getPlannedPlaces() {
         if (searchItems == null) {
             loadPlans();
         }
         return searchItems;
     }
 
-    //TODO Implement the database
     private void loadPlans() {
         searchItems = searchPlacesDao.getPlannedPlaces();
     }

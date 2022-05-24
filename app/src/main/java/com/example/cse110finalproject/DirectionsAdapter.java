@@ -55,9 +55,12 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         public void setSearchItem(EdgeDispInfo searchItem){
             this.searchItem = searchItem;
             String directionStr;
-            directionStr = String.format("travel %s meters along %s",
+            directionStr = String.format("From %1$s, travel %2$s meters along %3$s to %4$s",
+                    searchItem.start,
                     searchItem.distance,
-                    searchItem.streetName);
+                    searchItem.streetName,
+                    searchItem.end
+                    );
             this.textView.setText(directionStr);
         }
 

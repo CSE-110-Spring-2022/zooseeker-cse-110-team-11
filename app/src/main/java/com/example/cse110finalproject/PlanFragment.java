@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +25,26 @@ public class PlanFragment extends Fragment {
     public RecyclerView recyclerView;
     PlanViewModel viewModel;
     PlanListAdapter adapter;
+
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return Returns the view of the fragment, not currently visible
+     * not all components are initialized at this point
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_plan, container, false);
     }
 
+    /**
+     * @param view
+     * @param savedInstanceState
+     *
+     * In this method, the view is created and we can access all components contained in fragment
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -44,13 +57,16 @@ public class PlanFragment extends Fragment {
                 .get(PlanViewModel.class);
 
         adapter = new PlanListAdapter();
-        List<Places> searchItems = viewModel.getSearchItems();
-        adapter.setSearchItem(searchItems);
+
+        //Load in only the planned exhibits
+        List<Places> placesList = viewModel.getPlannedPlaces();
+        adapter.setSearchItem(placesList);
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
+        //Set the cunter that shows the num of planned exhibits
         TextView counter = rootView.findViewById(R.id.num_exhibits_textview);
         counter.setText(String.valueOf(adapter.getItemCount()));
     }

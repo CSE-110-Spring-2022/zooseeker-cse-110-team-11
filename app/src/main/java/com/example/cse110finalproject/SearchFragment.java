@@ -25,6 +25,13 @@ public class SearchFragment extends Fragment {
     AnimalListAdapter adapter;
     EditText editText;
 
+    /**
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return Returns the view of the fragment, not currently visible
+     * not all components are initialized at this point
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,11 +40,21 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * @param view
+     * @param savedInstanceState
+     *
+     * In this method, the view is created and we can access all components contained in fragment
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         buildRecycleView();
         editText = rootView.findViewById(R.id.add_search_text);
+
+        //We update the search items as the user types into the searchbar, everytime the search
+        //Text changes, we update
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -48,47 +65,34 @@ public class SearchFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String current = s.toString();
+                //If the search bar is empty, we show all items
                 if(current.length()==0){
-                    adapter.setSearchItem(viewModel.getSearchItems());
+                    adapter.setSearchItems(viewModel.getAllPlaces());
+                    return;
                 }
-                //filter(current);
-                adapter.filterList(viewModel.loadSearchResult(current));
-                //adapter.filterList(viewModel.loadSearchResult(current));
+                //We feed the recyclerview a query from the database
+                adapter.setSearchItems(viewModel.loadSearchResult(current));
             }
         });
-        // Configure Button
+        // Configure search Button
+        // TODO: Do we really need a search button?
         Button buttonSearch = (Button) rootView.findViewById(R.id.add_search_btn);
-        buttonSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText text = (EditText)getView().findViewById(R.id.add_search_text);
-                //filter(text.getText().toString());
-                String content = text.getText().toString();
-                //List<Places> searchResult = viewModel.loadSearchResult(content);
-            }
+        buttonSearch.setOnClickListener(v -> {
+            EditText text = (EditText)getView().findViewById(R.id.add_search_text);
+            String content = text.getText().toString();
         });
 
-        // Inflate the layout for this fragment
     }
-//    private void filter(String text) {
-//        Log.d("Message", "Testing3");
-//        List<Places> filteredList = new ArrayList<>();
-//        List<Places> allExhibits = new ArrayList(adapter.getPlaces());
-//        for (Places item : allExhibits) {
-//            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
-//                filteredList.add(item);
-//            }
-//        }
-//
-//        adapter.filterList(filteredList);
-//    }
 
+    /**
+     * This uses class members to create the recyclerview, also sets check listener
+     */
     private void buildRecycleView(){
 
         viewModel = new ViewModelProvider(this)
                 .get(SearchViewModel.class);
         adapter = new AnimalListAdapter();
-        adapter.setSearchItem(viewModel.getSearchItems());
+        adapter.setSearchItems(viewModel.getAllPlaces());
         adapter.setHasStableIds(true);
         adapter.setOnCheckBoxClicked(viewModel::updateCheckbox);
         recyclerView = rootView.findViewById(R.id.animal_items);
