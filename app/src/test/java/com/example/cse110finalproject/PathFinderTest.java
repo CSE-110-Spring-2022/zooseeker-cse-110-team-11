@@ -36,10 +36,10 @@ public class PathFinderTest {
 
         List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
 
-        List<Places> wantToVisit = placesList.subList(0,3);
+        List<Places> wantToVisit = placesList.subList(1,3);
 
 
-        PathCalculator calculator = new PathCalculator(graph, wantToVisit.get(0).id_name, wantToVisit);
+        PathCalculator calculator = new PathCalculator(graph, placesList.get(0).id_name, wantToVisit);
         GraphPath<String, IdentifiedWeightedEdge> smallestPath=calculator.smallestPath();
 
 
