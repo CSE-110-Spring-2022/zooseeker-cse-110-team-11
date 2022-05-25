@@ -68,6 +68,30 @@ public class PlanFragmentsInsrumentedTest {
                 }
         );
 
+        FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
+                planFragment -> {
+                    Places allgiator = new Places(Allagator details);
+                    Places tasdasd = new Places();
+
+                    List<Places> plannedPlacesList = new ArrayList<Places>();
+                    plannedPlacesList.add(alligator);
+                    //do this two more times for the other two places object
+
+                    Button clearAll = planFragment.getView().findViewById();
+
+
+                    /*PlanListAdapter planListAdapter = planFragment.adapter;
+                    assert(planListAdapter.searchItem!=null);
+                    assert(planFragment.isVisible());
+                    assert(planFragment.getView().findViewById(R.id.plan_items).isShown());
+                    TextView numPlanned = planFragment.getView().findViewById(R.id.num_exhibits_textview);
+                    assert(numPlanned.getText().equals(String.valueOf(planListAdapter.getItemCount())));*/
+
+                    planFragment.viewModel.db.releaseSingleton();
+                    planFragment.viewModel.db.close();
+                }
+        );
+
         FragmentScenario<DirectionsFragment> directionsscenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
                 directionsFragment -> {
                     Context context = directionsFragment.getContext();
