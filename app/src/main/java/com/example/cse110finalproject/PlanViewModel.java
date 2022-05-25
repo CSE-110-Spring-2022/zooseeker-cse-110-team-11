@@ -6,6 +6,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class PlanViewModel extends AndroidViewModel {
     private List<Places> plannedPlacesList;
     @VisibleForTesting
     final SearchDatabase db;
-    public int placesCount;
+    public MutableLiveData<Integer> placesCount = new MutableLiveData<>();
 
 
     public PlanViewModel(@NonNull Application application) {
@@ -29,16 +30,16 @@ public class PlanViewModel extends AndroidViewModel {
         if (plannedPlacesList == null) {
             loadPlans();
         }
-        placesCount = plannedPlacesList.size();
+        placesCount.setValue(plannedPlacesList.size());
         return plannedPlacesList;
     }
 
     //A method that would remove the planned item from the plan tab
     public void deletePlaces(Places places) {
-        places.checked = !places.checked;
+        places.checked = false;
         plannedPlacesList.remove(places);
         searchPlacesDao.update(places);
-        placesCount = plannedPlacesList.size();
+        placesCount.setValue(plannedPlacesList.size());
     }
 
     public void deleteAllPlaces() {
@@ -47,7 +48,7 @@ public class PlanViewModel extends AndroidViewModel {
             searchPlacesDao.update(places);
         }
         plannedPlacesList.clear();
-        placesCount = plannedPlacesList.size();
+        placesCount.setValue(plannedPlacesList.size());
     }
 
     private void loadPlans() {

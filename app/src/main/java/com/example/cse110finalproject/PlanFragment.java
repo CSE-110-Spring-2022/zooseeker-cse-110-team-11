@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,7 @@ public class PlanFragment extends Fragment {
     PlanViewModel viewModel;
     PlanListAdapter adapter;
     private Runnable onAllClearClicked;
+    private TextView counter;
 
     /**
      * @param inflater
@@ -77,8 +79,20 @@ public class PlanFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
+        //Get Live Size from the viewmodel
+        LiveData<Integer> liveSize = viewModel.placesCount;
+        liveSize.observe(this.getViewLifecycleOwner(), num -> setSizeText(num));
+
         //Set the counter that shows the num of planned exhibits
-        TextView counter = rootView.findViewById(R.id.num_exhibits_textview);
+        counter = rootView.findViewById(R.id.num_exhibits_textview);
         counter.setText(String.valueOf(adapter.getItemCount()));
+
+
     }
+
+    void setSizeText(Integer num) {
+        counter.setText(String.valueOf(num));
+    }
+
+
 }
