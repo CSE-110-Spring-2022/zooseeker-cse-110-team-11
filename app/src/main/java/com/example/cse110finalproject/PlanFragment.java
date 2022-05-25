@@ -60,7 +60,6 @@ public class PlanFragment extends Fragment {
         adapter = new PlanListAdapter();
         adapter.setDeletePlannedPlace(viewModel::deletePlaces);
 
-
         //Load in only the planned exhibits
         List<Places> placesList = viewModel.getPlannedPlaces();
         adapter.setSearchItem(placesList);
