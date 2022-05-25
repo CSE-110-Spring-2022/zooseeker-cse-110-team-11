@@ -13,6 +13,12 @@ import java.util.List;
 public class PlanViewModel extends AndroidViewModel {
     @VisibleForTesting
     public final SearchPlacesDao searchPlacesDao;
+
+    public void setPlannedPlacesList(List<Places> plannedPlacesList) {
+        this.plannedPlacesList = plannedPlacesList;
+        placesCount.setValue(plannedPlacesList.size());
+    }
+
     private List<Places> plannedPlacesList;
     @VisibleForTesting
     final SearchDatabase db;
@@ -50,6 +56,7 @@ public class PlanViewModel extends AndroidViewModel {
         plannedPlacesList.clear();
         placesCount.setValue(plannedPlacesList.size());
     }
+
 
     private void loadPlans() {
         plannedPlacesList = searchPlacesDao.getPlannedPlaces();

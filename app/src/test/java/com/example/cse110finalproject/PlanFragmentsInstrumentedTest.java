@@ -1,6 +1,7 @@
 package com.example.cse110finalproject;
 
 import android.content.Context;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -70,25 +71,21 @@ public class PlanFragmentsInstrumentedTest {
 
         FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
-                    Places allgiator = new Places(Allagator details);
-                    Places tasdasd = new Places();
+                    Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators");
+                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions");
+                    Places elephant = new Places("elephant_odyssey", ZooData.VertexInfo.Kind.EXHIBIT,true,"Elephant Odyssey");
 
                     List<Places> plannedPlacesList = new ArrayList<Places>();
                     plannedPlacesList.add(alligator);
-                    //do this two more times for the other two places object
+                    plannedPlacesList.add(lions);
+                    plannedPlacesList.add(elephant);
 
-                    Button clearAll = planFragment.getView().findViewById();
-
-
-                    /*PlanListAdapter planListAdapter = planFragment.adapter;
-                    assert(planListAdapter.searchItem!=null);
-                    assert(planFragment.isVisible());
-                    assert(planFragment.getView().findViewById(R.id.plan_items).isShown());
-                    TextView numPlanned = planFragment.getView().findViewById(R.id.num_exhibits_textview);
-                    assert(numPlanned.getText().equals(String.valueOf(planListAdapter.getItemCount())));*/
-
-                    planFragment.viewModel.db.releaseSingleton();
-                    planFragment.viewModel.db.close();
+                    Button clearAll = planFragment.getView().findViewById(R.id.all_clr_bttn);
+                    planFragment.adapter.searchItem = plannedPlacesList;
+                    planFragment.adapter.notifyDataSetChanged();
+                    planFragment.viewModel.setPlannedPlacesList(plannedPlacesList);
+                    clearAll.callOnClick();
+                    assert(planFragment.adapter.searchItem.size() == 0);
                 }
         );
 
