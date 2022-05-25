@@ -15,6 +15,7 @@ public class PlanViewModel extends AndroidViewModel {
     private List<Places> plannedPlacesList;
     @VisibleForTesting
     final SearchDatabase db;
+    public int placesCount;
 
 
     public PlanViewModel(@NonNull Application application) {
@@ -28,6 +29,7 @@ public class PlanViewModel extends AndroidViewModel {
         if (plannedPlacesList == null) {
             loadPlans();
         }
+        placesCount = plannedPlacesList.size();
         return plannedPlacesList;
     }
 
@@ -36,6 +38,16 @@ public class PlanViewModel extends AndroidViewModel {
         places.checked = !places.checked;
         plannedPlacesList.remove(places);
         searchPlacesDao.update(places);
+        placesCount = plannedPlacesList.size();
+    }
+
+    public void deleteAllPlaces() {
+        for(Places places : plannedPlacesList) {
+            places.checked = false;
+            searchPlacesDao.update(places);
+        }
+        plannedPlacesList.clear();
+        placesCount = plannedPlacesList.size();
     }
 
     private void loadPlans() {

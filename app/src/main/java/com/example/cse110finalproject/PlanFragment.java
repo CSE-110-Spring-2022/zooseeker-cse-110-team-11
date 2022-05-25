@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
@@ -26,6 +27,7 @@ public class PlanFragment extends Fragment {
     public RecyclerView recyclerView;
     PlanViewModel viewModel;
     PlanListAdapter adapter;
+    private Runnable onAllClearClicked;
 
     /**
      * @param inflater
@@ -60,6 +62,13 @@ public class PlanFragment extends Fragment {
         adapter = new PlanListAdapter();
         adapter.setDeletePlannedPlace(viewModel::deletePlaces);
 
+        Button clearAll = rootView.findViewById(R.id.all_clr_bttn);
+        clearAll.setOnClickListener(view1 -> {
+            viewModel.deleteAllPlaces();
+            adapter.notifyDataSetChanged();
+        });
+
+
         //Load in only the planned exhibits
         List<Places> placesList = viewModel.getPlannedPlaces();
         adapter.setSearchItem(placesList);
@@ -68,7 +77,7 @@ public class PlanFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        //Set the cunter that shows the num of planned exhibits
+        //Set the counter that shows the num of planned exhibits
         TextView counter = rootView.findViewById(R.id.num_exhibits_textview);
         counter.setText(String.valueOf(adapter.getItemCount()));
     }
