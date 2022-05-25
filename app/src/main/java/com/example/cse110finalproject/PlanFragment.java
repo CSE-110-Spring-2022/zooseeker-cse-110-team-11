@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,6 +58,8 @@ public class PlanFragment extends Fragment {
                 .get(PlanViewModel.class);
 
         adapter = new PlanListAdapter();
+        adapter.setDeletePlannedPlace(viewModel::deletePlaces);
+
 
         //Load in only the planned exhibits
         List<Places> placesList = viewModel.getPlannedPlaces();

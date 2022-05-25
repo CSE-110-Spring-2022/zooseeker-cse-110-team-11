@@ -31,6 +31,12 @@ public class PlanViewModel extends AndroidViewModel {
         return plannedPlacesList;
     }
 
+    //A method that would remove the planned item from the plan tab
+    public void deletePlaces(Places places) {
+        places.checked = !places.checked;
+        searchPlacesDao.update(places);
+    }
+
     private void loadPlans() {
         plannedPlacesList = searchPlacesDao.getPlannedPlaces();
     }

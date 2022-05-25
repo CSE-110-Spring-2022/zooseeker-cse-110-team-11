@@ -52,7 +52,8 @@ public class PlanFragmentsInsrumentedTest {
                 }
         );
         scenario.close();
-        //When
+        //Checking if the number of displaying the animal count works and that it
+        //is initialized after the create.
         FragmentScenario<PlanFragment> fragmentScenario = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
                     PlanListAdapter planListAdapter = planFragment.adapter;
