@@ -10,10 +10,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -33,9 +35,14 @@ public class DirectionsFragment extends Fragment {
     DirectionsViewModel viewModel;
     DirectionsAdapter adapter;
     Places current;
+    Places next;
     Places entranceExitPlace;
     private Graph<String, IdentifiedWeightedEdge> graph;
     List<Places> unvisited;
+    EditText current_dest;
+    EditText next_dest;
+    String current_name;
+    String next_name;
 
 
     /**
@@ -99,9 +106,16 @@ public class DirectionsFragment extends Fragment {
         unvisited.add(entranceExitPlace);
 
 
+
+
         //Setup next button
         Button nextbtn = getView().findViewById(R.id.next_button);
         nextbtn.setOnClickListener(view1 -> nextDirections());
+
+        //Setup skip button
+        // TODO: Implement skip function
+        Button skipbtn = getView().findViewById(R.id.skip_button);
+//        skipbtn.setOnClickListener();
 
         //Start showing directions
         if(unvisited.size()>1) {
@@ -124,6 +138,17 @@ public class DirectionsFragment extends Fragment {
         List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
         current = placesIdMap.get(path.getEndVertex());
         adapter.setDiretionsItems(edgeDispInfoList);
+        //  Current & Next Destination
+        current_dest   = (EditText)getView().findViewById(R.id.current_dest);
+        current_dest.setText(current.name);
+
+        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+        PathCalculator nextcalculator = new PathCalculator(graph, current.id_name, unvisited);
+        GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
+        next_dest   = (EditText)getView().findViewById(R.id.next_dest);
+
+        next_dest.setText(placesIdMap.get(nextpath.getEndVertex()).getName());
+
     }
 
     /**

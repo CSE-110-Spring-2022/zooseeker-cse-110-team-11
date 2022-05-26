@@ -13,7 +13,9 @@
         <entry key="..\:/Users/Wowom/AndroidStudioProjects/CSE110FinalProject/app/src/main/res/layout/planned_exhibit_list.xml" value="0.25" />
         <entry key="..\:/Users/Wowom/AndroidStudioProjects/CSE110FinalProject/app/src/main/res/layout/search.xml" value="0.3451086956521739" />
         <entry key="..\:/Users/Wowom/AndroidStudioProjects/CSE110FinalProject/app/src/main/res/layout/title.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/Wowom/AndroidStudioProjects/zooseeker-cse-110-team-11/app/src/main/res/layout/fragment_plan.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Wowom/AndroidStudioProjects/zooseeker-cse-110-team-11/app/src/main/res/layout/direction_list_item.xml" value="0.35104166666666664" />
+        <entry key="..\:/Users/Wowom/AndroidStudioProjects/zooseeker-cse-110-team-11/app/src/main/res/layout/fragment_directions.xml" value="0.35104166666666664" />
+        <entry key="..\:/Users/Wowom/AndroidStudioProjects/zooseeker-cse-110-team-11/app/src/main/res/layout/fragment_plan.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/drawable/ic_baseline_directions_24.xml" value="0.491" />
         <entry key="app/src/main/res/drawable/ic_baseline_plan_note_24.xml" value="0.491" />
         <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.3915" />
