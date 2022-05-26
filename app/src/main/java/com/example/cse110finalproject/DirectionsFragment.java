@@ -138,18 +138,38 @@ public class DirectionsFragment extends Fragment {
         List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
         current = placesIdMap.get(path.getEndVertex());
         adapter.setDiretionsItems(edgeDispInfoList);
-        //  Current & Next Destination
-        current_dest   = (EditText)getView().findViewById(R.id.current_dest);
-        current_dest.setText(current.name);
+        setCurrentDestination();
+        setNextDestination();
 
+    }
+
+    /**
+     * Sets the current destination
+     */
+    public void setCurrentDestination(){
+        current_dest   = (EditText)getView().findViewById(R.id.current_dest);
+        current_dest.setText(current.getName());
+    }
+    /**
+     * Gets next destination from the current destination
+     */
+    public String getNextDestination(){
+        String next;
         unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
         PathCalculator nextcalculator = new PathCalculator(graph, current.id_name, unvisited);
         GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
-        next_dest   = (EditText)getView().findViewById(R.id.next_dest);
-
-        next_dest.setText(placesIdMap.get(nextpath.getEndVertex()).getName());
-
+        next = placesIdMap.get(nextpath.getEndVertex()).getName();
+        return next;
     }
+
+    /**
+     * Sets the next destination
+     */
+    public void setNextDestination(){
+        next_dest   = (EditText)getView().findViewById(R.id.next_dest);
+        next_dest.setText(getNextDestination());
+    }
+
 
     /**
      * TODO: Fix this to keep proper track of source & destinations
