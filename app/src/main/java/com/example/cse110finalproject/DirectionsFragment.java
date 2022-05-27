@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -34,9 +36,13 @@ public class DirectionsFragment extends Fragment {
     DirectionsViewModel viewModel;
     DirectionsAdapter adapter;
     Places current;
+    Places next;
     Places entranceExitPlace;
     private Graph<String, IdentifiedWeightedEdge> graph;
     List<Places> unvisited;
+    EditText current_dest;
+    EditText next_dest;
+    boolean visited_all;
 
 
     /**
@@ -100,9 +106,16 @@ public class DirectionsFragment extends Fragment {
         unvisited.add(entranceExitPlace);
 
 
+
+
         //Setup next button
         Button nextbtn = getView().findViewById(R.id.next_button);
         nextbtn.setOnClickListener(view1 -> nextDirections());
+
+        //Setup skip button
+        // TODO: Implement skip function
+        Button skipbtn = getView().findViewById(R.id.skip_button);
+        skipbtn.setOnClickListener(view1 -> skip());
 
         //Start showing directions
         if(unvisited.size()>1) {
@@ -114,18 +127,84 @@ public class DirectionsFragment extends Fragment {
      * Changes screen to display directions to the next planned exhibit
      */
     public void nextDirections() {
-        if(unvisited.size()==1) {
-            unvisited.add(entranceExitPlace);
+        // For Debugging
+        if( visited_all == true){
+            current = unvisited.get(0);
+            next = unvisited.get(1);
+            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            adapter.setDiretionsItems(edgeDispInfoList);
             Button nextbtn = getView().findViewById(R.id.next_button);
-            nextbtn.setClickable(false);
+            nextbtn.setEnabled(false);
         }
-        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-        PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
-        current = placesIdMap.get(path.getEndVertex());
-        adapter.setDiretionsItems(edgeDispInfoList);
+        else {
+            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            current = placesIdMap.get(path.getEndVertex());
+            adapter.setDiretionsItems(edgeDispInfoList);
+        }
+        printUnvisited();
+        setCurrentDestination();
+        setNextDestination();
+
+        if(unvisited.size()==1 && visited_all == false) {
+            visited_all = true;
+            unvisited.add(entranceExitPlace);
+        }
     }
+
+    public void printUnvisited(){
+        for(Places p : unvisited){
+            Log.d("Unvisited" , p.getName());
+        }
+        Log.d("Unvisited",Integer.toString(unvisited.size()));
+    }
+
+    /**
+     * Skip Buttons Functionality
+     */
+    public void skip(){
+        if(unvisited.size() == 2){
+            nextDirections();
+        }
+        else{
+            nextDirections();
+            nextDirections();
+        }
+
+    }
+
+    /**
+     * Sets the current destination
+     */
+    public void setCurrentDestination(){
+        current_dest = (EditText)getView().findViewById(R.id.current_dest);
+        current_dest.setText(current.getName());
+    }
+    /**
+     * Gets next destination from the current destination
+     */
+    public String getNextDestination(){
+        String next;
+        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+        PathCalculator nextcalculator = new PathCalculator(graph, current.id_name, unvisited);
+        GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
+        next = placesIdMap.get(nextpath.getEndVertex()).getName();
+        return next;
+    }
+
+    /**
+     * Sets the next destination
+     */
+    public void setNextDestination(){
+        next_dest   = (EditText)getView().findViewById(R.id.next_dest);
+        next_dest.setText(getNextDestination());
+    }
+
 
     /**
      * TODO: Fix this to keep proper track of source & destinations
