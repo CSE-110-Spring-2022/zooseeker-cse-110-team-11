@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //         exhibitsMap =
-//            ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
+//            ZooData.loadVertexInfoJSON(this,"exhibit_info.json");
 //        exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
 //        Log.d("json", exhibitsMap.toString());
 

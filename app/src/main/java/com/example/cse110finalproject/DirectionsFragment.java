@@ -78,15 +78,15 @@ public class DirectionsFragment extends Fragment {
 
         //Load add locations from the json file using helper code
         Map<String, ZooData.VertexInfo> exhibitsMap =
-                ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                ZooData.loadVertexInfoJSON(context, "exhibit_info.json");
 
         //Just the vertex values, from the map
         //We need this to get loaction names from ids
         List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
 
         //We need this in order to get the street names from the edge_ids
-        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "sample_edge_info.json");
-        graph = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "trail_info.json");
+        graph = ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
         //Get a list of places from the vertex list
         List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);

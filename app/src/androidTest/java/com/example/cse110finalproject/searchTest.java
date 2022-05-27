@@ -1,17 +1,9 @@
 package com.example.cse110finalproject;
 
-import android.app.Activity;
 import android.content.Context;
-import android.widget.Button;
-import android.widget.EditText;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import static org.junit.Assert.*;
 
 
 import org.junit.Before;
@@ -32,7 +24,7 @@ public class searchTest {
                 .build();
         SearchDatabase.injectTestDatabase(db);
 
-        List<ZooData.VertexInfo> vertex = ZooData.loadVertexToListJSON(context,"sample_node_info.json");
+        List<ZooData.VertexInfo> vertex = ZooData.loadVertexToListJSON(context, "exhibit_info.json");
         List<Places> places = Places.convertVertexListToPlaces(vertex);
         dao = db.searchPlacesDao();
         dao.insertAll(places);

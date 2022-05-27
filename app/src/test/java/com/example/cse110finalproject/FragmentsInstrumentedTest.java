@@ -67,9 +67,9 @@ public class FragmentsInstrumentedTest {
                 directionsFragment -> {
                     Context context = directionsFragment.getContext();
                     Map<String, ZooData.VertexInfo> exhibitsMap =
-                            ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                            ZooData.loadVertexInfoJSON(context, "exhibit_info.json");
                     List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
-                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
                     List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
 
@@ -88,9 +88,9 @@ public class FragmentsInstrumentedTest {
                 directionsFragment -> {
                     Context context = directionsFragment.getContext();
                     Map<String, ZooData.VertexInfo> exhibitsMap =
-                            ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                            ZooData.loadVertexInfoJSON(context, "exhibit_info.json");
                     List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
-                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
                     List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
 
