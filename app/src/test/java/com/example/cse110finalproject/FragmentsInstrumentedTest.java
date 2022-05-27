@@ -1,6 +1,7 @@
 package com.example.cse110finalproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import java.util.Map;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class PlanFragmentsInstrumentedTest {
+public class FragmentsInstrumentedTest {
     SearchDatabase testDb;
     SearchPlacesDao placesListItemDao;
 //    @Before
@@ -38,8 +39,12 @@ public class PlanFragmentsInstrumentedTest {
 //    }
 
 
+    /**
+     * We have to put all of out tests under one @Plan notation due to a strange database
+     * mocking error that androidx does in the background
+     */
     @Test
-    public void testingFragmentPlan() {
+    public void testingAllFragments() {
 
         FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
                 searchFragment -> {
@@ -53,6 +58,8 @@ public class PlanFragmentsInstrumentedTest {
                 }
         );
         scenario.close();
+
+
         //Checking if the number of displaying the animal count works and that it
         //is initialized after the create.
         FragmentScenario<PlanFragment> fragmentScenario = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
@@ -69,6 +76,7 @@ public class PlanFragmentsInstrumentedTest {
                 }
         );
 
+        //Testing clear all
         FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
                     Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators");
@@ -89,7 +97,29 @@ public class PlanFragmentsInstrumentedTest {
                 }
         );
 
-        FragmentScenario<DirectionsFragment> directionsscenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
+        //Testing that directions are displayed with no exceptions
+        FragmentScenario<DirectionsFragment> directionsSkipScenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
+                directionsFragment -> {
+                    Context context = directionsFragment.getContext();
+                    Map<String, ZooData.VertexInfo> exhibitsMap =
+                            ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                    List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
+                    Graph<String, IdentifiedWeightedEdge> graph =  ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+
+                    List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
+
+                    List<Places> wantToVisit = placesList.subList(1,3);
+
+                    Log.d("debug list0", wantToVisit.toString());
+
+
+                    directionsFragment.unvisited = wantToVisit;
+
+                    directionsFragment.nextDirections();
+                }
+        );
+        //Testing that directions are displayed with no exceptions
+        FragmentScenario<DirectionsFragment> directionsScenario = FragmentScenario.launchInContainer(DirectionsFragment.class).onFragment(
                 directionsFragment -> {
                     Context context = directionsFragment.getContext();
                     Map<String, ZooData.VertexInfo> exhibitsMap =

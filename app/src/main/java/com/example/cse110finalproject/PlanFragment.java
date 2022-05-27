@@ -81,6 +81,7 @@ public class PlanFragment extends Fragment {
 
         //Get Live Size from the viewmodel
         LiveData<Integer> liveSize = viewModel.placesCount;
+        //Everytime the number of planned exhibits changes, we update the textview
         liveSize.observe(this.getViewLifecycleOwner(), num -> setSizeText(num));
 
         //Set the counter that shows the num of planned exhibits
