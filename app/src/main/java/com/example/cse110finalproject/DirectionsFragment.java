@@ -41,8 +41,7 @@ public class DirectionsFragment extends Fragment {
     List<Places> unvisited;
     EditText current_dest;
     EditText next_dest;
-    String current_name;
-    String next_name;
+    boolean visited_all;
 
 
     /**
@@ -115,7 +114,7 @@ public class DirectionsFragment extends Fragment {
         //Setup skip button
         // TODO: Implement skip function
         Button skipbtn = getView().findViewById(R.id.skip_button);
-//        skipbtn.setOnClickListener();
+        skipbtn.setOnClickListener(view1 -> skip());
 
         //Start showing directions
         if(unvisited.size()>1) {
@@ -127,19 +126,54 @@ public class DirectionsFragment extends Fragment {
      * Changes screen to display directions to the next planned exhibit
      */
     public void nextDirections() {
-        if(unvisited.size()==1) {
-            unvisited.add(entranceExitPlace);
+        // For Debugging
+        if( visited_all == true){
+            current = unvisited.get(0);
+            next = unvisited.get(1);
+            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            adapter.setDiretionsItems(edgeDispInfoList);
             Button nextbtn = getView().findViewById(R.id.next_button);
-            nextbtn.setClickable(false);
+            nextbtn.setEnabled(false);
         }
-        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-        PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
-        current = placesIdMap.get(path.getEndVertex());
-        adapter.setDiretionsItems(edgeDispInfoList);
+        else {
+            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            current = placesIdMap.get(path.getEndVertex());
+            adapter.setDiretionsItems(edgeDispInfoList);
+        }
+        printUnvisited();
         setCurrentDestination();
         setNextDestination();
+
+        if(unvisited.size()==1 && visited_all == false) {
+            visited_all = true;
+            unvisited.add(entranceExitPlace);
+        }
+    }
+
+    public void printUnvisited(){
+        for(Places p : unvisited){
+            Log.d("Unvisited" , p.getName());
+        }
+        Log.d("Unvisited",Integer.toString(unvisited.size()));
+    }
+
+    /**
+     * Skip Buttons Functionality
+     */
+    public void skip(){
+        if(unvisited.size() == 2){
+            nextDirections();
+        }
+        else{
+            nextDirections();
+            nextDirections();
+        }
 
     }
 
@@ -147,7 +181,7 @@ public class DirectionsFragment extends Fragment {
      * Sets the current destination
      */
     public void setCurrentDestination(){
-        current_dest   = (EditText)getView().findViewById(R.id.current_dest);
+        current_dest = (EditText)getView().findViewById(R.id.current_dest);
         current_dest.setText(current.getName());
     }
     /**
