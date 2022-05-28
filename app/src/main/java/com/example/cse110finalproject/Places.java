@@ -29,14 +29,18 @@ public class Places {
     public ZooData.VertexInfo.Kind kind;
     public boolean checked;
     public String name;
+    public List<String> tagList;
+
+    public String tags = "";
 
 
 
-    Places(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name) {
+    Places(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name, List<String> tagList) {
         this.id_name = id_name;
         this.kind = kind;
         this.checked = checked;
         this.name = name;
+        this.tagList = tagList;
     }
 
     @Override
@@ -53,13 +57,21 @@ public class Places {
     public static List<Places> convertVertexListToPlaces(List<ZooData.VertexInfo> vertexList) {
         List<Places> placesList;
         placesList = vertexList.stream().map((ZooData.VertexInfo vertex)->{
-            return new Places(vertex.id, vertex.kind, false, vertex.name);
+            return new Places(vertex.id, vertex.kind, false, vertex.name, vertex.tags);
         }).collect(Collectors.toList());
         return placesList;
     }
 
     public String getName(){
         return this.name;
+    }
+
+    public String getTags(List<String> tagList) {
+        for(String tag : tagList) {
+            this.tags += tag;
+        }
+
+        return this.tags;
     }
 
 
