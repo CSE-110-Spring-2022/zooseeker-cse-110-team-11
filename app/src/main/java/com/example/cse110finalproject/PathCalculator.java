@@ -3,11 +3,9 @@ package com.example.cse110finalproject;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathCalculator {
     Graph<String, IdentifiedWeightedEdge> graph;
@@ -15,15 +13,10 @@ public class PathCalculator {
     List<Places> places;
     List<String> needVisit;
 
-    PathCalculator(Graph<String, IdentifiedWeightedEdge> graph, String curr, List<Places> places) {
+    PathCalculator(Graph<String, IdentifiedWeightedEdge> graph, String curr, List<String> places_ids) {
         this.graph = graph;
         this.curr = curr;
-        this.places = places;
-        needVisit = new ArrayList<String>();
-        for(Places place : places) {
-            String name = place.id_name;
-            needVisit.add(name);
-        }
+        this.needVisit = places_ids;
     }
 
     /**
