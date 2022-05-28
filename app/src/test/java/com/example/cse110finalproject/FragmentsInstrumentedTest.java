@@ -109,9 +109,9 @@ public class FragmentsInstrumentedTest {
     private void clearAllButtonInPlanTab() {
         FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
-                    Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators");
-                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions");
-                    Places elephant = new Places("elephant_odyssey", ZooData.VertexInfo.Kind.EXHIBIT,true,"Elephant Odyssey");
+                    Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators", "gators");
+                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions","mammals");
+                    Places elephant = new Places("elephant_odyssey", ZooData.VertexInfo.Kind.EXHIBIT,true,"Elephant Odyssey", "mammals");
 
                     List<Places> plannedPlacesList = new ArrayList<Places>();
                     plannedPlacesList.add(alligator);

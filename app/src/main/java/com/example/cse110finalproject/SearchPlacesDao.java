@@ -31,7 +31,7 @@ public interface SearchPlacesDao {
     @Query("SELECT * FROM `search_places` WHERE `checked`=1")
     List<Places> getPlannedPlaces();
 
-    @Query("SELECT * FROM `search_places` WHERE (`kind`='EXHIBIT' AND `name` LIKE '%' || :keyword || '%' AND 'tags' LIKE '%' || :keyword || '%') ")
+    @Query("SELECT * FROM `search_places` WHERE `kind`='EXHIBIT' AND `name` AND `tags` LIKE '%' || :keyword || '%' ")
     List<Places> getSearchResult(String keyword);
 
     @Update
