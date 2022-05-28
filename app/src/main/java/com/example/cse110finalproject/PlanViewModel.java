@@ -45,6 +45,7 @@ public class PlanViewModel extends AndroidViewModel {
         places.checked = false;
         plannedPlacesList.remove(places);
         searchPlacesDao.update(places);
+        //Whenever setValue is called, all observers are alerted to keep this updated
         placesCount.setValue(plannedPlacesList.size());
     }
 
