@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -104,6 +105,8 @@ public class DirectionsFragment extends Fragment {
         unvisited = plannedPlaces;
         //Convert places to exhibits
         unvisitedExhbits = getIdsListFromPlacesList(plannedPlaces).stream().map(id-> exhibitMap.get(id)).collect(Collectors.toList());
+        exhibitMap = new HashMap<String, Exhibit>();
+        exhibitGroupsWithChildren = new HashMap<>();
 
         recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -173,27 +176,31 @@ public class DirectionsFragment extends Fragment {
 
     List<Exhibit> groupTogetherExhibits(List<Exhibit> exhibits) {
 
-
-
-        List<Exhibit> exhibitNeedToVisit;
-
         //Add all exhibits except ones that are part of a group
         //For groups: only add the group
-        exhibitNeedToVisit = new ArrayList<Exhibit>();
+        List<Exhibit> exhibitNeedToVisit = new ArrayList<Exhibit>();
         for(Exhibit exhibit: exhibits) {
             if(exhibit.hasGroup()) {
                 String exhibitGroupid = exhibit.groupId;
+                //If we already have the group, just add this as a child to keep track of it
                 if(exhibitNeedToVisit.contains(exhibit)) {
                     exhibitGroupsWithChildren.get(exhibitGroupid).add(exhibit);
-                } else {
+                }
+                //Otherwise we add the group to the group map
+                //And add the group to the plan
+                else {
                     List<Exhibit> childrenList = new ArrayList<Exhibit>();
                     childrenList.add(exhibit);
                     exhibitGroupsWithChildren.put(exhibitGroupid, childrenList);
+                    exhibitNeedToVisit.add(exhibitMap.get(exhibitGroupid));
                 }
+            } else {
+                //If the exhibit is not in a group, just add it to the plan
+                exhibitNeedToVisit.add(exhibit);
             }
         }
 
-        return (List<Exhibit>) exhibitNeedToVisit;
+        return exhibitNeedToVisit;
 
     }
 
