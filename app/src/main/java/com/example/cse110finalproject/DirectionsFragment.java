@@ -105,7 +105,6 @@ public class DirectionsFragment extends Fragment {
         unvisited = plannedPlaces;
         //Convert places to exhibits
         unvisitedExhbits = getIdsListFromPlacesList(plannedPlaces).stream().map(id-> exhibitMap.get(id)).collect(Collectors.toList());
-        exhibitMap = new HashMap<String, Exhibit>();
         exhibitGroupsWithChildren = new HashMap<>();
 
         recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
@@ -137,7 +136,7 @@ public class DirectionsFragment extends Fragment {
         current = entranceExitPlace;
         unvisited.add(entranceExitPlace);
         unvisitedExhbits=groupTogetherExhibits(unvisitedExhbits);
-        assert(unvisitedExhbits.stream().noneMatch(exhibit -> exhibit.hasGroup()));
+        assert(unvisitedExhbits.stream().noneMatch(exhibit -> exhibit==null));
 
 
 
@@ -290,8 +289,7 @@ public class DirectionsFragment extends Fragment {
      */
     public String getNextDestination(){
         String next;
-        unvisited = removePlaceWithId(unvisited, current.id_name);
-        PathCalculator nextcalculator = new PathCalculator(graph, current.id_name, getIdsListFromPlacesList(unvisited));
+        PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
         GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
         next = placesIdMap.get(nextpath.getEndVertex()).getName();
         return next;
