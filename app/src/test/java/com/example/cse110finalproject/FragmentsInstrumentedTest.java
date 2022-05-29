@@ -44,9 +44,11 @@ public class FragmentsInstrumentedTest {
     @Test
     public void testingAllFragments() {
 
+        //Testing if search by name works
+        searchingForGorillaSearchFragment();
 
-        seachingForGorillaSearchFragment();
-
+        //
+        searchingForMammalTagSearchFragment();
 
         //
         planTabTestPlannedExhibitsCounter();
@@ -110,7 +112,7 @@ public class FragmentsInstrumentedTest {
         FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
                 planFragment -> {
                     Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators", "gators");
-                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions","mammals");
+                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions", "mammals");
                     Places elephant = new Places("elephant_odyssey", ZooData.VertexInfo.Kind.EXHIBIT,true,"Elephant Odyssey", "mammals");
 
                     List<Places> plannedPlacesList = new ArrayList<Places>();
@@ -128,7 +130,7 @@ public class FragmentsInstrumentedTest {
         );
     }
 
-    private void seachingForGorillaSearchFragment() {
+    private void searchingForGorillaSearchFragment() {
         FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
                 searchFragment -> {
                     EditText searchBar = searchFragment.getView().findViewById(R.id.add_search_text);
@@ -137,6 +139,21 @@ public class FragmentsInstrumentedTest {
                         searchBar.setText("Gor");
                     }
                     assert(searchAdapter.getPlaces().get(0).id_name.contains("gor"));
+                    searchFragment.viewModel.db.close();
+                }
+        );
+        scenario.close();
+    }
+
+    private void searchingForMammalTagSearchFragment() {
+        FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
+                searchFragment -> {
+                    EditText searchBar = searchFragment.getView().findViewById(R.id.add_search_text);
+                    AnimalListAdapter searchAdapter = searchFragment.adapter;
+                    synchronized (searchBar) {
+                        searchBar.setText("mammal");
+                    }
+                    assert(searchAdapter.getPlaces().get(0).tags.contains("mammal"));
                     searchFragment.viewModel.db.close();
                 }
         );

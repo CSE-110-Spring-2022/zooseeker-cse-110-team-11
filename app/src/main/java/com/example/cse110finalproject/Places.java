@@ -29,9 +29,7 @@ public class Places {
     public ZooData.VertexInfo.Kind kind;
     public boolean checked;
     public String name;
-    public String tags = "";
-
-
+    public String tags;
 
 
 
@@ -69,14 +67,9 @@ public class Places {
     public static String getTags(List<String> tagList) {
         String tags = "";
         for(String tag : tagList) {
-            tags += tag + ", ";
+            tags += tag;
         }
 
         return tags;
     }
-
-
-
-
-
 }
