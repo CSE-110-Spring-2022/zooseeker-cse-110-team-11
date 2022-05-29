@@ -33,7 +33,7 @@ public abstract class SearchDatabase extends RoomDatabase {
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                            List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(context, "sample_node_info.json");
+                            List<ZooData.VertexInfo> vertices = ZooData.loadVertexToListJSON(context, "exhibit_info.json");
                             List<Places> places = Places
                                     .convertVertexListToPlaces(vertices);
                             getSingleton(context).searchPlacesDao().insertAll(places);
