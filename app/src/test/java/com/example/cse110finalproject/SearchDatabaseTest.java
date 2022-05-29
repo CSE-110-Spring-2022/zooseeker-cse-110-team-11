@@ -37,8 +37,8 @@ public class SearchDatabaseTest {
 
     @Test
     public void testInsert() {
-        Places place1 = new Places("Pizza time", ZooData.VertexInfo.Kind.EXHIBIT, false, "Pizza");
-        Places place2 = new Places("Photos of Spider-Man", ZooData.VertexInfo.Kind.EXHIBIT, false, "Spider-Man");
+        Places place1 = new Places("Pizza time", ZooData.VertexInfo.Kind.EXHIBIT, false, "Pizza", "mammalsrat");
+        Places place2 = new Places("Photos of Spider-Man", ZooData.VertexInfo.Kind.EXHIBIT, false, "Spider-Man", "spiderkiller");
 
         long id1 = dao.insert(place1);
         long id2 = dao.insert(place2);
@@ -48,7 +48,7 @@ public class SearchDatabaseTest {
 
     @Test
     public void testGet() {
-        Places place1 = new Places("Pizza time", ZooData.VertexInfo.Kind.EXHIBIT, false, "Pizza");
+        Places place1 = new Places("Pizza time", ZooData.VertexInfo.Kind.EXHIBIT, false, "Pizza","mammals");
         long id = dao.insert(place1);
 
         Places item = dao.get(id);
@@ -56,6 +56,7 @@ public class SearchDatabaseTest {
         assertEquals(place1.name, item.name);
         assertEquals(place1.checked, item.checked);
         assertEquals(place1.kind, item.kind);
+        assertEquals(place1.tags, item.tags);
     }
 
 
