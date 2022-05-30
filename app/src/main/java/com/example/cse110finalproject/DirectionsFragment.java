@@ -309,7 +309,34 @@ public class DirectionsFragment extends Fragment {
      * @param path
      * @return
      */
-    public List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path) {
+    public List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, IdentifiedWeightedEdge> streetIdMap) {
+        List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
+
+        String current = path.getStartVertex();
+
+
+        for(IdentifiedWeightedEdge edge: path.getEdgeList()) {
+            if(!edge.getSourceStr().equals(current)) {
+                edgeDispInfos.add(new EdgeDispInfo(
+                        placesIdMap.get(edge.getTargetStr()).name,
+                        placesIdMap.get(edge.getSourceStr()).name,
+                        streetIdMap.get(edge.getId()),
+                        String.valueOf(edge.getWeight())));
+            } else {
+                edgeDispInfos.add(new EdgeDispInfo(
+                        placesIdMap.get(edge.getSourceStr()).name,
+                        placesIdMap.get(edge.getTargetStr()).name,
+                        streetIdMap.get(edge.getId()),
+                        String.valueOf(edge.getWeight())));
+
+            }
+
+
+
+        }
+
+
+
         return path.getEdgeList().stream().map(edge -> {
             return new EdgeDispInfo(
                     placesIdMap.get(edge.getSourceStr()).name,
