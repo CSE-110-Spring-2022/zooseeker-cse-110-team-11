@@ -46,6 +46,7 @@ public class DirectionsFragment extends Fragment {
     EditText current_dest;
     EditText next_dest;
     boolean visited_all;
+    boolean final_directions;
     private List<Exhibit> unvisitedExhbits;
     private Map<String, List<Exhibit>> exhibitGroupsWithChildren;
     private Exhibit currentExhibit;
@@ -151,7 +152,9 @@ public class DirectionsFragment extends Fragment {
         skipbtn.setOnClickListener(view1 -> skip());
 
         //Start showing directions
+        printUnvisited();
         if(unvisited.size()>1) {
+            unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             nextDirections();
         }
     }
@@ -214,59 +217,65 @@ public class DirectionsFragment extends Fragment {
      * TODO: replace Places with Exhibits
      */
     public void nextDirections() {
-        // For Debugging
-        //TODO: this probably does not put current and next in the right order
-        if( visited_all == true){
-            current = unvisited.get(0);
-            currentExhibit = unvisitedExhbits.get(0);
-            next = unvisited.get(1);
-            nextExhibit = unvisitedExhbits.get(1);
-            Button nextbtn = getView().findViewById(R.id.next_button);
-            nextbtn.setEnabled(false);
+        if(final_directions){
+
         }
-        unvisited = removePlaceWithId(unvisited, current.id_name);
-        unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
-
-
-        PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
-        adapter.setDiretionsItems(edgeDispInfoList);
-        if(visited_all!=true) {
-            current = placesIdMap.get(path.getEndVertex());
+        else if(visited_all){
+            Log.d("Here", currentExhibit.name);
+            printUnvisited();
+            unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
+            unvisitedExhbits.add(entranceExitExhibit);
+            PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
             currentExhibit = exhibitMap.get(path.getEndVertex());
+            adapter.setDiretionsItems(edgeDispInfoList);
+            final_directions = true;
         }
+        else{
+            // Calculate the next closest exhibit
+            PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
+            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            adapter.setDiretionsItems(edgeDispInfoList);
+
+
+            // Current Destination where user is headed
+            currentExhibit = exhibitMap.get(path.getEndVertex());
+
+            // Remove Current Destination from unvisited list
+            unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
+        }
+
+        Log.d("Current", currentExhibit.name);
+        // Display Current and Next Destination
         printUnvisited();
         setCurrentDestination();
         setNextDestination();
 
-        if(unvisited.size()==1 && visited_all == false) {
+        if(unvisitedExhbits.size() == 0 && visited_all == false) {
             visited_all = true;
-            unvisitedExhbits.add(entranceExitExhibit);
-            unvisited.add(entranceExitPlace);
         }
+
     }
 
     @NonNull
-    private List<Places> removePlaceWithId(@NonNull List<Places> unvisited,@NonNull String removeid) {
-        return unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-    }
     private List<Exhibit> removeExhibitWithId(@NonNull List<Exhibit> unvisited,@NonNull String removeid) {
-        return unvisited.stream().filter(places -> !places.id.equals(current.id_name)).collect(Collectors.toList());
+        return unvisited.stream().filter(places -> !places.id.equals(currentExhibit.id)).collect(Collectors.toList());
     }
 
     public void printUnvisited(){
-        for(Places p : unvisited){
-            Log.d("Unvisited" , p.getName());
+        for(Exhibit e : unvisitedExhbits){
+            Log.d("Unvisited" , e.name);
         }
-        Log.d("Unvisited",Integer.toString(unvisited.size()));
+        Log.d("Unvisited",Integer.toString(unvisitedExhbits.size()));
     }
 
     /**
      * Skip Buttons Functionality
      */
     public void skip(){
-        if(unvisited.size() == 2){
+        if(unvisitedExhbits.size() == 2){
             nextDirections();
         }
         else{
@@ -281,7 +290,13 @@ public class DirectionsFragment extends Fragment {
      */
     public void setCurrentDestination(){
         current_dest = (EditText)getView().findViewById(R.id.current_dest);
-        current_dest.setText(current.getName());
+        current_dest.setText(currentExhibit.name);
+        if(currentExhibit.name.equals("Entrance and Exit Gate")){
+            Button nextbtn = getView().findViewById(R.id.next_button);
+            nextbtn.setEnabled(false);
+            Button skipbtn = getView().findViewById(R.id.skip_button);
+            skipbtn.setEnabled(false);
+        }
     }
 
     /**
@@ -289,10 +304,17 @@ public class DirectionsFragment extends Fragment {
      */
     public String getNextDestination(){
         String next;
-        PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
-        GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
-        next = placesIdMap.get(nextpath.getEndVertex()).getName();
-        return next;
+        Log.d("Current Path", currentExhibit.name);
+        try{
+            PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
+            GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
+            next = placesIdMap.get(nextpath.getEndVertex()).name;
+            Log.d("Next Path", next);
+            return next;
+        }
+        catch(Exception e){
+            return null;
+        }
     }
 
     /**
