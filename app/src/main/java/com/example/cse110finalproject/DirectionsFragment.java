@@ -20,7 +20,11 @@ import android.widget.EditText;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +46,12 @@ public class DirectionsFragment extends Fragment {
     EditText current_dest;
     EditText next_dest;
     boolean visited_all;
+    private List<Exhibit> unvisitedExhbits;
+    private Map<String, List<Exhibit>> exhibitGroupsWithChildren;
+    private Exhibit currentExhibit;
+    private Exhibit nextExhibit;
+    private Exhibit entranceExitExhibit;
+    private Map<String, Exhibit> exhibitMap;
 
 
     /**
@@ -76,7 +86,26 @@ public class DirectionsFragment extends Fragment {
 
         adapter = new DirectionsAdapter();
         List<Places> plannedPlaces = viewModel.getPlannedPlaces();
+
+        //Load kist of exhibits from new json
+        Reader exhibitsReader = null;
+        Reader trailsReader = null;
+        try {
+            exhibitsReader = new InputStreamReader(context.getAssets().open("exhibit_info.json"));
+            trailsReader = new InputStreamReader(context.getAssets().open("trail_info.json"));
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load data for prepopulation!");
+        }
+
+        List<Exhibit> exhibitList = Exhibit.fromJson(exhibitsReader);
+        exhibitMap = exhibitList.stream().collect(Collectors.toMap(exhibit -> exhibit.id, exhibit -> exhibit));
+
+
+
         unvisited = plannedPlaces;
+        //Convert places to exhibits
+        unvisitedExhbits = getIdsListFromPlacesList(plannedPlaces).stream().map(id-> exhibitMap.get(id)).collect(Collectors.toList());
+        exhibitGroupsWithChildren = new HashMap<>();
 
         recyclerView = rootView.findViewById(R.id.directionsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -84,15 +113,15 @@ public class DirectionsFragment extends Fragment {
 
         //Load add locations from the json file using helper code
         Map<String, ZooData.VertexInfo> exhibitsMap =
-                ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
+                ZooData.loadVertexInfoJSON(context, "exhibit_info.json");
 
         //Just the vertex values, from the map
         //We need this to get loaction names from ids
         List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
 
         //We need this in order to get the street names from the edge_ids
-        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "sample_edge_info.json");
-        graph = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "trail_info.json");
+        graph = ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
         //Get a list of places from the vertex list
         List<Places> placesList = Places.convertVertexListToPlaces(exhibitsList);
@@ -101,8 +130,13 @@ public class DirectionsFragment extends Fragment {
         placesIdMap = placesList.stream().collect(Collectors.toMap(place->place.id_name, place->place));
         //Set the first current exhibit as the entrance gate
         entranceExitPlace = placesList.stream().filter(places -> places.kind==ZooData.VertexInfo.Kind.GATE).findFirst().get();
+        entranceExitExhibit = exhibitList.stream().filter(exhibit -> exhibit.kind==Exhibit.Kind.GATE).findFirst().get();
+        currentExhibit = entranceExitExhibit;
+        unvisitedExhbits.add(entranceExitExhibit);
         current = entranceExitPlace;
         unvisited.add(entranceExitPlace);
+        unvisitedExhbits=groupTogetherExhibits(unvisitedExhbits);
+        assert(unvisitedExhbits.stream().noneMatch(exhibit -> exhibit==null));
 
 
 
@@ -123,28 +157,84 @@ public class DirectionsFragment extends Fragment {
     }
 
     /**
+     * @param place list of Places objects
+     * @return a list of the places ids
+     */
+    static List<String> getIdsListFromPlacesList(@NonNull List<Places> place) {
+        return place.stream().map(places -> places.id_name).collect(Collectors.toList());
+    }
+
+    /**
+     * @param exhibits list of Places objects
+     * @return a list of the places ids
+     */
+    static List<String> getIdsListFromExhibits(@NonNull List<Exhibit> exhibits) {
+        return exhibits.stream().map(exhibit -> exhibit.id).collect(Collectors.toList());
+    }
+
+
+    List<Exhibit> groupTogetherExhibits(List<Exhibit> exhibits) {
+
+        //Add all exhibits except ones that are part of a group
+        //For groups: only add the group
+        List<Exhibit> exhibitNeedToVisit = new ArrayList<Exhibit>();
+        for(Exhibit exhibit: exhibits) {
+            if(exhibit.hasGroup()) {
+                String exhibitGroupid = exhibit.groupId;
+                //If we already have the group, just add this as a child to keep track of it
+                if(exhibitNeedToVisit.contains(exhibit)) {
+                    exhibitGroupsWithChildren.get(exhibitGroupid).add(exhibit);
+                }
+                //Otherwise we add the group to the group map
+                //And add the group to the plan
+                else {
+                    List<Exhibit> childrenList = new ArrayList<Exhibit>();
+                    childrenList.add(exhibit);
+                    exhibitGroupsWithChildren.put(exhibitGroupid, childrenList);
+                    exhibitNeedToVisit.add(exhibitMap.get(exhibitGroupid));
+                }
+            } else {
+                //If the exhibit is not in a group, just add it to the plan
+                exhibitNeedToVisit.add(exhibit);
+            }
+        }
+
+        return exhibitNeedToVisit;
+
+    }
+
+    enum ExhibitOrGroup {
+
+    }
+
+
+    /**
      * Changes screen to display directions to the next planned exhibit
+     * TODO: Add comments/cleanup this stuff
+     * TODO: replace Places with Exhibits
      */
     public void nextDirections() {
         // For Debugging
+        //TODO: this probably does not put current and next in the right order
         if( visited_all == true){
             current = unvisited.get(0);
+            currentExhibit = unvisitedExhbits.get(0);
             next = unvisited.get(1);
-            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
-            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
-            adapter.setDiretionsItems(edgeDispInfoList);
+            nextExhibit = unvisitedExhbits.get(1);
             Button nextbtn = getView().findViewById(R.id.next_button);
             nextbtn.setEnabled(false);
         }
-        else {
-            unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-            PathCalculator calculator = new PathCalculator(graph, current.id_name, unvisited);
-            GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+        unvisited = removePlaceWithId(unvisited, current.id_name);
+        unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
+
+
+        PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
+        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+        adapter.setDiretionsItems(edgeDispInfoList);
+        if(visited_all!=true) {
             current = placesIdMap.get(path.getEndVertex());
-            adapter.setDiretionsItems(edgeDispInfoList);
+            currentExhibit = exhibitMap.get(path.getEndVertex());
         }
         printUnvisited();
         setCurrentDestination();
@@ -152,8 +242,17 @@ public class DirectionsFragment extends Fragment {
 
         if(unvisited.size()==1 && visited_all == false) {
             visited_all = true;
+            unvisitedExhbits.add(entranceExitExhibit);
             unvisited.add(entranceExitPlace);
         }
+    }
+
+    @NonNull
+    private List<Places> removePlaceWithId(@NonNull List<Places> unvisited,@NonNull String removeid) {
+        return unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+    }
+    private List<Exhibit> removeExhibitWithId(@NonNull List<Exhibit> unvisited,@NonNull String removeid) {
+        return unvisited.stream().filter(places -> !places.id.equals(current.id_name)).collect(Collectors.toList());
     }
 
     public void printUnvisited(){
@@ -184,13 +283,13 @@ public class DirectionsFragment extends Fragment {
         current_dest = (EditText)getView().findViewById(R.id.current_dest);
         current_dest.setText(current.getName());
     }
+
     /**
      * Gets next destination from the current destination
      */
     public String getNextDestination(){
         String next;
-        unvisited = unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-        PathCalculator nextcalculator = new PathCalculator(graph, current.id_name, unvisited);
+        PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
         GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
         next = placesIdMap.get(nextpath.getEndVertex()).getName();
         return next;
@@ -200,7 +299,7 @@ public class DirectionsFragment extends Fragment {
      * Sets the next destination
      */
     public void setNextDestination(){
-        next_dest   = (EditText)getView().findViewById(R.id.next_dest);
+        next_dest = (EditText)getView().findViewById(R.id.next_dest);
         next_dest.setText(getNextDestination());
     }
 
