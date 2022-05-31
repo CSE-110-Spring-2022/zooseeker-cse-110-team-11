@@ -13,10 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-
-import org.jgrapht.Graph;
-import org.w3c.dom.Text;
-
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
     public List<PlacesWithDistance> searchItem = Collections.emptyList();
     private Consumer<PlacesWithDistance> onClearClicked;
@@ -47,6 +43,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if(searchItem==null) return 0;
         return searchItem.size();
     }
 
@@ -79,6 +76,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
             this.places = searchItem;
             this.textView.setText(searchItem.name);
             this.distance.setText(String.valueOf(searchItem.distanceFromEntrance)+" ft");
+            this.street_name.setText(places.streetName);
         }
     }
 }
@@ -86,12 +84,21 @@ class PlacesWithDistance extends Places {
     int distanceFromEntrance;
 
 
+
+    String streetName;
+
     List<Exhibit> placesInGroup;
 
     PlacesWithDistance(Exhibit exhibit, int distanceFromEntrance) {
         super(exhibit.id, ZooData.VertexInfo.Kind.EXHIBIT, true, exhibit.name, null);
         this.name = exhibit.name;
         this.distanceFromEntrance=distanceFromEntrance;
+    }
+    PlacesWithDistance(Exhibit exhibit, int distanceFromEntrance, String streetName) {
+        super(exhibit.id, ZooData.VertexInfo.Kind.EXHIBIT, true, exhibit.name, null);
+        this.name = exhibit.name;
+        this.distanceFromEntrance=distanceFromEntrance;
+        this.streetName = streetName;
     }
 
     PlacesWithDistance(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name, String tags) {
@@ -112,6 +119,14 @@ class PlacesWithDistance extends Places {
 
     public void setDistanceFromEntrance(int distanceFromEntrance) {
         this.distanceFromEntrance = distanceFromEntrance;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
 }

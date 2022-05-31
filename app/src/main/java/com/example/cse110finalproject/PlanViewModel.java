@@ -111,7 +111,7 @@ public class PlanViewModel extends AndroidViewModel {
         Map<String, Places> placesMap = placesList.stream().collect(Collectors.toMap(places -> places.id_name, places -> places));
         exhibitToDistanceMap = getDistanceFromExhibit(fullPath, exhibitMap);
 
-        placesdispList = convertMapToExhibandDist(exhibitToDistanceMap);
+        placesdispList = convertMapToExhibandDistAndStreet(exhibitToDistanceMap, exhibitToStreet);
 
 
         List<PlacesWithDistance> newPlacesdispList = new ArrayList<>();
@@ -129,7 +129,7 @@ public class PlanViewModel extends AndroidViewModel {
 
                 //Add all sub exhibits as their own entries
                 for(Exhibit place :placesWithDistance.placesInGroup) {
-                    newPlacesdispList.add(new PlacesWithDistance(place, placesWithDistance.distanceFromEntrance));
+                    newPlacesdispList.add(new PlacesWithDistance(place, placesWithDistance.distanceFromEntrance, placesWithDistance.streetName));
                 }
             } else {
                 newPlacesdispList.add(placesWithDistance);
@@ -164,9 +164,14 @@ public class PlanViewModel extends AndroidViewModel {
     public void deletePlaces(PlacesWithDistance places) {
         placesdispList.remove(places);
         Places removePlace = plannedPlacesList.stream().filter(places1 -> places1.id_name.equals(places.id_name)).findFirst().get();
-        removePlace.checked=false;
-        plannedPlacesList.remove(removePlace);
-        searchPlacesDao.update(removePlace);
+
+        //Check for unplanned entrance
+        if(plannedPlacesList.contains(removePlace)) {
+            removePlace.checked=false;
+            plannedPlacesList.remove(removePlace);
+            searchPlacesDao.update(removePlace);
+        }
+
         //Whenever setValue is called, all observers are alerted to keep this updated
         placesCount.setValue(plannedPlacesList.size());
     }
@@ -190,23 +195,25 @@ public class PlanViewModel extends AndroidViewModel {
         Map<String, String> bank = new HashMap<>();
         for(int i = 0; i < fullPath.size(); i++) {
             if(planned.contains(fullPath.get(i).getEndVertex())) {
-                List<IdentifiedWeightedEdge> edges = fullPath.get(i).getEdgeList();
-                IdentifiedWeightedEdge lastEdge = edges.get(edges.size()-1);
-                bank.put(fullPath.get(i).getEndVertex(), streetIdMap.get(lastEdge.getId()));
             }
+            List<IdentifiedWeightedEdge> edges = fullPath.get(i).getEdgeList();
+            IdentifiedWeightedEdge lastEdge = edges.get(edges.size()-1);
+            bank.put(fullPath.get(i).getEndVertex(), streetIdMap.get(lastEdge.getId()));
         }
         return bank;
     }
 
 
-    static List<PlacesWithDistance> convertMapToExhibandDist(Map<Exhibit, Integer> convertMap) {
+    static List<PlacesWithDistance> convertMapToExhibandDistAndStreet(Map<Exhibit, Integer> convertMap, Map<String, String> streetIdMap) {
         return convertMap.entrySet().stream().map(stringExhibitEntry -> {
             Exhibit key = stringExhibitEntry.getKey();
             int value = stringExhibitEntry.getValue();
-            return new PlacesWithDistance(
+            PlacesWithDistance place = new PlacesWithDistance(
                     key,
                     value
             );
+            place.setStreetName(streetIdMap.get(key.id));
+            return place;
         }).collect(Collectors.toList());
 
     }
