@@ -154,6 +154,17 @@ public class PlanFragment extends Fragment {
         counter = rootView.findViewById(R.id.num_exhibits_textview);
         counter.setText(String.valueOf(adapter.getItemCount()));
 
+        placesdispList.sort((placesAndDist1, placesAndDist2) -> {
+            int distance1 = placesAndDist1.distanceFromEntrance;
+            int distance2 = placesAndDist2.distanceFromEntrance;
+            if(distance1 < distance2) {
+                return -1;
+            } else if(distance1 > distance2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
 
         adapter.setSearchItem(placesdispList);
 
