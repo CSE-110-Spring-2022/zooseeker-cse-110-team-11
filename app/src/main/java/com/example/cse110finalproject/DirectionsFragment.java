@@ -227,11 +227,10 @@ public class DirectionsFragment extends Fragment {
             // Remove Current Destination from unvisited list
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             if(visited_all){
-                Log.d("Unvisited","Here");
                 unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
                 unvisitedExhbits.add(entranceExitExhibit);
-                PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
-                GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+
+                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
                 List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
                 previousExhibit = currentExhibit;
                 currentExhibit = exhibitMap.get(path.getEndVertex());
@@ -239,15 +238,12 @@ public class DirectionsFragment extends Fragment {
                 final_directions = true;
 
                 // Display Current and Next Destination
-                setCurrentDestination();
-                setNextDestination();
-                Button prebtn = getView().findViewById(R.id.previous_button);
-                prebtn.setEnabled(true);
+                setNextCurrent();
+                enablePrevious(true);
             }
             else{
                 // Calculate the next closest exhibit
-                PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
-                GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
                 List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
                 adapter.setDiretionsItems(edgeDispInfoList);
 
@@ -255,44 +251,46 @@ public class DirectionsFragment extends Fragment {
                 // Current Destination where user is headed
                 previousExhibit = currentExhibit;
                 currentExhibit = exhibitMap.get(path.getEndVertex());
-                Log.d("previous", previousExhibit.name);
-                Log.d("current", currentExhibit.name);
 
                 // Display Current and Next Destination
-                setCurrentDestination();
-                setNextDestination();
-                Button prebtn = getView().findViewById(R.id.previous_button);
-                prebtn.setEnabled(true);
+                setNextCurrent();
+                enablePrevious(true);
             }
 
 
-            if(unvisitedExhbits.size() == 1 && visited_all == false && !currentExhibit.name.equals("Entrance and Exit Gate") ) {
+            if(unvisitedExhbits.size() == 1 && visited_all == false ) {
                 visited_all = true;
                 next_dest = (EditText) getView().findViewById(R.id.next_dest);
-                next_dest.setText("Entrance and Exit Gate");
+                if(currentExhibit.name.equals("Entrance and Exit Gate")){
+                    next_dest.setText(" ");
+                    enableNextSkip(false);
+                }
+                else{
+                    next_dest.setText("Entrance and Exit Gate");
+                }
 
             }
+
 
         }
 
-        printUnvisited();
-
+    }
+    public GraphPath<String, IdentifiedWeightedEdge> getPath(){
+        PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
+        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+        return path;
     }
 
     public void previousDirections(){
         currentExhibit = previousExhibit;
-        PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+
+        GraphPath<String, IdentifiedWeightedEdge> path = getPath();
         nextExhibit = exhibitMap.get(path.getEndVertex());
-        setCurrentDestination();
-        setNextDestination();
-        Button prebtn = getView().findViewById(R.id.previous_button);
-        prebtn.setEnabled(false);
+        setNextCurrent();
+        enablePrevious(false);
         enableNextSkip(true);
         final_directions = false;
         visited_all = false;
-        printUnvisited();
-        Log.d("current", currentExhibit.name);
 
     }
 
@@ -325,6 +323,11 @@ public class DirectionsFragment extends Fragment {
 
     }
 
+    public void setNextCurrent(){
+        setCurrentDestination();
+        setNextDestination();
+    }
+
     /**
      * Sets the current destination
      */
@@ -337,13 +340,23 @@ public class DirectionsFragment extends Fragment {
     }
 
     /**
-     *
+     * Active/Inactives the next and skip button
+     * @param choice whether buttons are enabled
      */
     public void enableNextSkip(boolean choice){
         Button nextbtn = getView().findViewById(R.id.next_button);
         nextbtn.setEnabled(choice);
         Button skipbtn = getView().findViewById(R.id.skip_button);
         skipbtn.setEnabled(choice);
+    }
+
+    /**
+     * Active/Inactives the previous button
+     * @param choice whether buttons are enabled
+     */
+    public void enablePrevious(boolean choice){
+        Button prebtn = getView().findViewById(R.id.previous_button);
+        prebtn.setEnabled(choice);
     }
 
     /**
