@@ -114,6 +114,16 @@ public class PlanViewModel extends AndroidViewModel {
 
         placesdispList = convertMapToExhibandDist(exhibitToDistanceMap);
 
+//        for(PlacesWithDistance placesWithDistance: placesdispList) {
+//            if(placesWithDistance.placesInGroup!=null&&!placesWithDistance.placesInGroup.isEmpty()) {
+//                placesdispList.remove(placesWithDistance);
+//                for(Places place :placesWithDistance.placesInGroup) {
+//                    placesdispList.add(new PlacesWithDistance())
+//                }
+//
+//            }
+//        }
+
 
         placesdispList.sort((placesAndDist1, placesAndDist2) -> {
             int distance1 = placesAndDist1.distanceFromEntrance;
@@ -139,9 +149,9 @@ public class PlanViewModel extends AndroidViewModel {
 
     //A method that would remove the planned item from the plan tab
     public void deletePlaces(PlacesWithDistance places) {
-        places.checked = false;
         placesdispList.remove(places);
         Places removePlace = plannedPlacesList.stream().filter(places1 -> places1.id_name.equals(places.id_name)).findFirst().get();
+        removePlace.checked=false;
         plannedPlacesList.remove(removePlace);
         searchPlacesDao.update(removePlace);
         //Whenever setValue is called, all observers are alerted to keep this updated

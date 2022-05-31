@@ -78,7 +78,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
         public void setSearchItem(PlacesWithDistance searchItem){
             this.places = searchItem;
             this.textView.setText(searchItem.name);
-            this.distance.setText(String.valueOf(searchItem.distanceFromEntrance));
+            this.distance.setText(String.valueOf(searchItem.distanceFromEntrance)+" ft");
         }
     }
 }
