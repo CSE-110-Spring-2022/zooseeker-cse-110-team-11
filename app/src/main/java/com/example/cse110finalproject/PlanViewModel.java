@@ -73,12 +73,11 @@ public class PlanViewModel extends AndroidViewModel {
         streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "trail_info.json");
         graph = ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
-        processPlacesIntoDisplayList(context);
 
 
     }
 
-    private void processPlacesIntoDisplayList(Context context) {
+    public void processPlacesIntoDisplayList(Context context) {
         List<Places> placesList = getPlannedPlaces();
 
 

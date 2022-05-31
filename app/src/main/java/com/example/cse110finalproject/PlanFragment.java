@@ -72,6 +72,7 @@ public class PlanFragment extends Fragment {
         viewModel = new ViewModelProvider(this)
                 .get(PlanViewModel.class);
 
+        viewModel.processPlacesIntoDisplayList(getContext());
         adapter = new PlanListAdapter();
         adapter.setDeletePlannedPlace(viewModel::deletePlaces);
 
