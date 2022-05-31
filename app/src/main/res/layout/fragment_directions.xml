@@ -45,6 +45,17 @@
         app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
         app:layout_constraintVertical_bias="0.458" />
 
+    <Button
+        android:id="@+id/previous_button"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="284dp"
+        android:text="Previous"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
+        app:layout_constraintVertical_bias="0.462" />
+
     <TextView
         android:id="@+id/current_dest_label"
         android:layout_width="wrap_content"
