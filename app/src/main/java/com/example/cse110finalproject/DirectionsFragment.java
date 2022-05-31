@@ -221,8 +221,6 @@ public class DirectionsFragment extends Fragment {
 
         }
         else if(visited_all){
-            Log.d("Here", currentExhibit.name);
-            printUnvisited();
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             unvisitedExhbits.add(entranceExitExhibit);
             PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
@@ -247,16 +245,14 @@ public class DirectionsFragment extends Fragment {
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
         }
 
-        Log.d("Current", currentExhibit.name);
         // Display Current and Next Destination
-        printUnvisited();
         setCurrentDestination();
         setNextDestination();
 
         if(unvisitedExhbits.size() == 0 && visited_all == false) {
             visited_all = true;
-            unvisitedExhbits.add(entranceExitExhibit);
-            unvisited.add(entranceExitPlace);
+            next_dest = (EditText)getView().findViewById(R.id.next_dest);
+            next_dest.setText("Entrance and Exit Gate");
         }
 
     }
@@ -314,7 +310,6 @@ public class DirectionsFragment extends Fragment {
             PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
             GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
             next = placesIdMap.get(nextpath.getEndVertex()).name;
-            Log.d("Next Path", next);
             return next;
         }
         catch(Exception e){
