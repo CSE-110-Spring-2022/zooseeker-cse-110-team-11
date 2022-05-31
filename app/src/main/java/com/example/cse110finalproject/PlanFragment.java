@@ -106,18 +106,27 @@ public class PlanFragment extends Fragment {
         streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "trail_info.json");
         graph = ZooData.loadZooGraphJSON(context, "zoo_graph.json");
 
-        List<String> unvisited = DirectionsFragment.getIdsListFromPlacesList(placesList);
+        List<String> unvisited;
         List<GraphPath<String, IdentifiedWeightedEdge>> fullPath = new ArrayList<>();
         String current = "entrance_exit_gate";
-        while(unvisited.size() > 1) {
+        Map<String, List<Exhibit>> exhibitGroupsWithChildren;
+        exhibitGroupsWithChildren=new HashMap<>();
+        unvisitedExhbits=DirectionsFragment.groupTogetherExhibits(unvisitedExhbits, exhibitMap, exhibitGroupsWithChildren);
+        unvisited=DirectionsFragment.getIdsListFromExhibits(unvisitedExhbits);
+        while(unvisited.size() > 0) {
             PathCalculator calculator = new PathCalculator(graph, current, unvisited);
             GraphPath<String, IdentifiedWeightedEdge> sp = calculator.smallestPath();
             fullPath.add(sp);
-            if(unvisited.contains(sp.getEndVertex())){
-                unvisited.remove(sp.getEndVertex());
-            }
+            unvisited.remove(sp.getEndVertex());
             current = sp.getEndVertex();
         }
+        unvisited.add("entrance_exit_gate");
+        PathCalculator calculator = new PathCalculator(graph, current, unvisited);
+        GraphPath<String, IdentifiedWeightedEdge> sp = calculator.smallestPath();
+        fullPath.add(sp);
+        unvisited.remove(sp.getEndVertex());
+
+
 
         Map<String, String> exhibitToStreet = new HashMap<>();
         Map<String, Integer> exhibitToDistance = new HashMap<>();
