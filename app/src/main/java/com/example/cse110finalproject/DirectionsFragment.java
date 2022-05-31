@@ -227,7 +227,7 @@ public class DirectionsFragment extends Fragment {
             unvisitedExhbits.add(entranceExitExhibit);
             PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
             GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
             currentExhibit = exhibitMap.get(path.getEndVertex());
             adapter.setDiretionsItems(edgeDispInfoList);
             final_directions = true;
@@ -236,7 +236,7 @@ public class DirectionsFragment extends Fragment {
             // Calculate the next closest exhibit
             PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
             GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
             adapter.setDiretionsItems(edgeDispInfoList);
 
 
