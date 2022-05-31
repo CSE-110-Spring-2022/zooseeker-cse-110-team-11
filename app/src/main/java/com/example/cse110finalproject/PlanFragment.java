@@ -166,7 +166,7 @@ public class PlanFragment extends Fragment {
             }
         });
 
-        adapter.setSearchItem(placesdispList);
+        adapter.setSearchItem(viewModel.getPlacesdispList());
 
     }
 
@@ -186,7 +186,7 @@ public class PlanFragment extends Fragment {
         counter.setText(String.valueOf(num));
     }
 
-    public Map<String, String> getStreetFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, List<Places> planned, Map<String, String> streetIdMap){
+    public static Map<String, String> getStreetFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, List<Places> planned, Map<String, String> streetIdMap){
         Map<String, String> bank = new HashMap<>();
         for(int i = 0; i < fullPath.size(); i++) {
             if(planned.contains(fullPath.get(i).getEndVertex())) {
@@ -198,7 +198,7 @@ public class PlanFragment extends Fragment {
         return bank;
     }
 
-    public Map<Exhibit, Integer> getDistanceFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, Map<String, Exhibit> exhibitMap) {
+    public static Map<Exhibit, Integer> getDistanceFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, Map<String, Exhibit> exhibitMap) {
         Map<Exhibit, Integer> bank = new HashMap<>();
         int total = 0;
         for(int i = 0; i < fullPath.size(); i++) {
