@@ -138,7 +138,7 @@ public class DirectionsFragment extends Fragment {
         unvisitedExhbits.add(entranceExitExhibit);
         current = entranceExitPlace;
         unvisited.add(entranceExitPlace);
-        unvisitedExhbits=groupTogetherExhibits(unvisitedExhbits);
+        unvisitedExhbits=groupTogetherExhibits(unvisitedExhbits, exhibitMap, exhibitGroupsWithChildren);
         assert(unvisitedExhbits.stream().noneMatch(exhibit -> exhibit==null));
 
 
@@ -180,7 +180,7 @@ public class DirectionsFragment extends Fragment {
     }
 
 
-    List<Exhibit> groupTogetherExhibits(List<Exhibit> exhibits) {
+    static List<Exhibit> groupTogetherExhibits(List<Exhibit> exhibits, Map<String, Exhibit> exhibitMap,Map<String, List<Exhibit>> exhibitGroupsWithChildren)  {
 
         //Add all exhibits except ones that are part of a group
         //For groups: only add the group

@@ -19,31 +19,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.39" />
+        app:layout_constraintVertical_bias="0.569" />
 
     <Button
         android:id="@+id/next_button"
         android:layout_width="92dp"
         android:layout_height="60dp"
-        android:layout_marginTop="0dp"
         android:layout_marginEnd="36dp"
+        android:layout_marginBottom="48dp"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
-        app:layout_constraintVertical_bias="0.459" />
+        app:layout_constraintStart_toEndOf="@+id/skip_button" />
 
     <Button
         android:id="@+id/skip_button"
         android:layout_width="92dp"
         android:layout_height="60dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="160dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="48dp"
         android:text="Skip"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
-        app:layout_constraintVertical_bias="0.458" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/previous_button"
