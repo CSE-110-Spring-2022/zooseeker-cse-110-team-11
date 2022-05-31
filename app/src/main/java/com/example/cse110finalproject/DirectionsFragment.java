@@ -39,6 +39,7 @@ public class DirectionsFragment extends Fragment {
     DirectionsViewModel viewModel;
     DirectionsAdapter adapter;
     Places current;
+    Places next;
     Places entranceExitPlace;
     private Graph<String, IdentifiedWeightedEdge> graph;
     List<Places> unvisited;
@@ -49,6 +50,7 @@ public class DirectionsFragment extends Fragment {
     private List<Exhibit> unvisitedExhbits;
     private Map<String, List<Exhibit>> exhibitGroupsWithChildren;
     private Exhibit currentExhibit;
+    private Exhibit nextExhibit;
     private Exhibit entranceExitExhibit;
     private Map<String, Exhibit> exhibitMap;
 
@@ -86,7 +88,7 @@ public class DirectionsFragment extends Fragment {
         adapter = new DirectionsAdapter();
         List<Places> plannedPlaces = viewModel.getPlannedPlaces();
 
-        //Load kist of exhibits from new json
+        //Load list of exhibits from new json
         Reader exhibitsReader = null;
         Reader trailsReader = null;
         try {
@@ -145,10 +147,12 @@ public class DirectionsFragment extends Fragment {
         nextbtn.setOnClickListener(view1 -> nextDirections());
 
         //Setup skip button
+        // TODO: Implement skip function
         Button skipbtn = getView().findViewById(R.id.skip_button);
         skipbtn.setOnClickListener(view1 -> skip());
 
         //Start showing directions
+        printUnvisited();
         if(unvisited.size()>1) {
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             nextDirections();
@@ -209,17 +213,21 @@ public class DirectionsFragment extends Fragment {
 
     /**
      * Changes screen to display directions to the next planned exhibit
+     * TODO: Add comments/cleanup this stuff
+     * TODO: replace Places with Exhibits
      */
     public void nextDirections() {
         if(final_directions){
 
         }
         else if(visited_all){
+            Log.d("Here", currentExhibit.name);
+            printUnvisited();
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             unvisitedExhbits.add(entranceExitExhibit);
             PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
             GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
             currentExhibit = exhibitMap.get(path.getEndVertex());
             adapter.setDiretionsItems(edgeDispInfoList);
             final_directions = true;
@@ -228,7 +236,7 @@ public class DirectionsFragment extends Fragment {
             // Calculate the next closest exhibit
             PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
             GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+            List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
             adapter.setDiretionsItems(edgeDispInfoList);
 
 
@@ -239,26 +247,28 @@ public class DirectionsFragment extends Fragment {
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
         }
 
+        Log.d("Current", currentExhibit.name);
         // Display Current and Next Destination
+        printUnvisited();
         setCurrentDestination();
         setNextDestination();
 
         if(unvisitedExhbits.size() == 0 && visited_all == false) {
             visited_all = true;
-            next_dest = (EditText)getView().findViewById(R.id.next_dest);
-            next_dest.setText("Entrance and Exit Gate");
+            unvisitedExhbits.add(entranceExitExhibit);
+            unvisited.add(entranceExitPlace);
         }
 
     }
 
     @NonNull
+    private List<Places> removePlaceWithId(@NonNull List<Places> unvisited,@NonNull String removeid) {
+        return unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
+    }
     private List<Exhibit> removeExhibitWithId(@NonNull List<Exhibit> unvisited,@NonNull String removeid) {
         return unvisited.stream().filter(places -> !places.id.equals(currentExhibit.id)).collect(Collectors.toList());
     }
 
-    /**
-     * Logs unvisited exhibits, used for testing
-     */
     public void printUnvisited(){
         for(Exhibit e : unvisitedExhbits){
             Log.d("Unvisited" , e.name);
@@ -296,14 +306,15 @@ public class DirectionsFragment extends Fragment {
 
     /**
      * Gets next destination from the current destination
-     * @return the next exhibit
      */
     public String getNextDestination(){
         String next;
+        Log.d("Current Path", currentExhibit.name);
         try{
             PathCalculator nextcalculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(removeExhibitWithId(unvisitedExhbits, currentExhibit.id)));
             GraphPath<String, IdentifiedWeightedEdge> nextpath = nextcalculator.smallestPath();
             next = placesIdMap.get(nextpath.getEndVertex()).name;
+            Log.d("Next Path", next);
             return next;
         }
         catch(Exception e){
@@ -317,7 +328,6 @@ public class DirectionsFragment extends Fragment {
     public void setNextDestination(){
         next_dest = (EditText)getView().findViewById(R.id.next_dest);
         next_dest.setText(getNextDestination());
-
     }
 
 
@@ -326,15 +336,31 @@ public class DirectionsFragment extends Fragment {
      * @param path
      * @return
      */
-    public List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path) {
-        return path.getEdgeList().stream().map(edge -> {
-            return new EdgeDispInfo(
-                    placesIdMap.get(edge.getSourceStr()).name,
-                    placesIdMap.get(edge.getTargetStr()).name,
-                    streetIdMap.get(edge.getId()),
-                    String.valueOf(edge.getWeight()));
-        }).collect(Collectors.toList());
+    public static List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
+        List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
 
+        String current = path.getStartVertex();
+
+
+        for(IdentifiedWeightedEdge edge: path.getEdgeList()) {
+            if(!edge.getSourceStr().equals(current)) {
+                edgeDispInfos.add(new EdgeDispInfo(
+                        exhibitMap.get(edge.getTargetStr()).name,
+                        exhibitMap.get(edge.getSourceStr()).name,
+                        streetIdMap.get(edge.getId()),
+                        String.valueOf(edge.getWeight())));
+                current = edge.getSourceStr();
+            } else {
+                edgeDispInfos.add(new EdgeDispInfo(
+                        exhibitMap.get(edge.getSourceStr()).name,
+                        exhibitMap.get(edge.getTargetStr()).name,
+                        streetIdMap.get(edge.getId()),
+                        String.valueOf(edge.getWeight())));
+                current = edge.getTargetStr();
+            }
+
+        }
+        return edgeDispInfos;
 
     }
 

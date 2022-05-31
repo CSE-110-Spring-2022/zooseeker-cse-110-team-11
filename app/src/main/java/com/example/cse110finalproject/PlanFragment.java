@@ -1,5 +1,6 @@
 package com.example.cse110finalproject;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,10 +19,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlanFragment extends Fragment {
 
@@ -30,6 +38,10 @@ public class PlanFragment extends Fragment {
     PlanListAdapter adapter;
     private Runnable onAllClearClicked;
     private TextView counter;
+    private Map<String, Exhibit> exhibitMap;
+    private List<Exhibit> unvisitedExhbits;
+    private Map<String, String> streetIdMap;
+    private Graph<String, IdentifiedWeightedEdge> graph;
 
     /**
      * @param inflater
@@ -70,10 +82,50 @@ public class PlanFragment extends Fragment {
             adapter.notifyDataSetChanged();
         });
 
-
         //Load in only the planned exhibits
         List<Places> placesList = viewModel.getPlannedPlaces();
         adapter.setSearchItem(placesList);
+
+        //Load list of exhibits from new json
+        Context context = getContext();
+        Reader exhibitsReader = null;
+        Reader trailsReader = null;
+        try {
+            exhibitsReader = new InputStreamReader(context.getAssets().open("exhibit_info.json"));
+            trailsReader = new InputStreamReader(context.getAssets().open("trail_info.json"));
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load data for prepopulation!");
+        }
+
+        List<Exhibit> exhibitList = Exhibit.fromJson(exhibitsReader);
+        exhibitMap = exhibitList.stream().collect(Collectors.toMap(exhibit -> exhibit.id, exhibit -> exhibit));
+        //Convert places to exhibits
+        unvisitedExhbits = DirectionsFragment.getIdsListFromPlacesList(placesList).stream().map(id-> exhibitMap.get(id)).collect(Collectors.toList());
+
+        //We need this in order to get the street names from the edge_ids
+        streetIdMap = ZooData.loadEdgeIdToStreetJSON(context, "trail_info.json");
+        graph = ZooData.loadZooGraphJSON(context, "zoo_graph.json");
+
+        List<String> unvisited = DirectionsFragment.getIdsListFromPlacesList(placesList);
+        List<GraphPath<String, IdentifiedWeightedEdge>> fullPath = new ArrayList<>();
+        String current = "entrance_exit_gate";
+        while(unvisited.size() > 1) {
+            PathCalculator calculator = new PathCalculator(graph, current, unvisited);
+            GraphPath<String, IdentifiedWeightedEdge> sp = calculator.smallestPath();
+            fullPath.add(sp);
+            if(unvisited.contains(sp.getEndVertex())){
+                unvisited.remove(sp.getEndVertex());
+            }
+            current = sp.getEndVertex();
+        }
+
+        Map<String, String> exhibitToStreet = new HashMap<>();
+        Map<String, Integer> exhibitToDistance = new HashMap<>();
+
+        //Gets the map of exhibit keys to their street string for value to the key
+        exhibitToStreet = getStreetFromExhibit(fullPath, placesList, streetIdMap);
+        //Gets the map of exhibit keys to their distance from the entrance along the path
+        exhibitToDistance = getDistanceFromExhibit(fullPath);
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -89,11 +141,33 @@ public class PlanFragment extends Fragment {
         counter.setText(String.valueOf(adapter.getItemCount()));
 
 
+
     }
 
     void setSizeText(Integer num) {
         counter.setText(String.valueOf(num));
     }
 
+    public Map<String, String> getStreetFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, List<Places> planned, Map<String, String> streetIdMap){
+        Map<String, String> bank = new HashMap<>();
+        for(int i = 0; i < fullPath.size(); i++) {
+            if(planned.contains(fullPath.get(i).getEndVertex())) {
+                List<IdentifiedWeightedEdge> edges = fullPath.get(i).getEdgeList();
+                IdentifiedWeightedEdge lastEdge = edges.get(edges.size()-1);
+                bank.put(fullPath.get(i).getEndVertex(), streetIdMap.get(lastEdge.getId()));
+            }
+        }
+        return bank;
+    }
 
+    public Map<String, Integer> getDistanceFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath) {
+        Map<String, Integer> bank = new HashMap<>();
+        int total = 0;
+        for(int i = 0; i < fullPath.size(); i++) {
+            total += fullPath.get(i).getWeight();
+            bank.put(fullPath.get(i).getEndVertex(), total);
+        }
+
+        return bank;
+    }
 }
