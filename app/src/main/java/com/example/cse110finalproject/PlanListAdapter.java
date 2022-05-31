@@ -18,10 +18,10 @@ import org.jgrapht.Graph;
 import org.w3c.dom.Text;
 
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
-    public List<Places> searchItem = Collections.emptyList();
+    public List<PlacesWithDistance> searchItem = Collections.emptyList();
     private Consumer<Places> onClearClicked;
 
-    public void setSearchItem(List<Places> searchItem){
+    public void setSearchItem(List<PlacesWithDistance> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
@@ -75,12 +75,23 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
             });
         }
 
-        public void setSearchItem(Places searchItem){
+        public void setSearchItem(PlacesWithDistance searchItem){
             this.places = searchItem;
             this.textView.setText(searchItem.name);
+            this.distance.setText(String.valueOf(searchItem.distanceFromEntrance));
         }
+    }
+}
+class PlacesWithDistance extends Places {
+    int distanceFromEntrance;
 
+    PlacesWithDistance(Exhibit exhibit, int distanceFromEntrance) {
+        super(exhibit.id, ZooData.VertexInfo.Kind.EXHIBIT, true, exhibit.name, null);
+        this.name = exhibit.name;
+        this.distanceFromEntrance=distanceFromEntrance;
+    }
 
-
+    PlacesWithDistance(@NonNull String id_name, ZooData.VertexInfo.Kind kind, boolean checked, String name, String tags) {
+        super(id_name, kind, checked, name, tags);
     }
 }

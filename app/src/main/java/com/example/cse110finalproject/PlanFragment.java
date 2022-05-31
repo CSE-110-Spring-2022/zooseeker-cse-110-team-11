@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +40,7 @@ public class PlanFragment extends Fragment {
     private List<Exhibit> unvisitedExhbits;
     private Map<String, String> streetIdMap;
     private Graph<String, IdentifiedWeightedEdge> graph;
+    private Map<String, List<Exhibit>> exhibitGroupsWithChildren;
 
     /**
      * @param inflater
@@ -84,7 +83,6 @@ public class PlanFragment extends Fragment {
 
         //Load in only the planned exhibits
         List<Places> placesList = viewModel.getPlannedPlaces();
-        adapter.setSearchItem(placesList);
 
         //Load list of exhibits from new json
         Context context = getContext();
@@ -109,8 +107,7 @@ public class PlanFragment extends Fragment {
         List<String> unvisited;
         List<GraphPath<String, IdentifiedWeightedEdge>> fullPath = new ArrayList<>();
         String current = "entrance_exit_gate";
-        Map<String, List<Exhibit>> exhibitGroupsWithChildren;
-        exhibitGroupsWithChildren=new HashMap<>();
+        exhibitGroupsWithChildren =new HashMap<>();
         unvisitedExhbits=DirectionsFragment.groupTogetherExhibits(unvisitedExhbits, exhibitMap, exhibitGroupsWithChildren);
         unvisited=DirectionsFragment.getIdsListFromExhibits(unvisitedExhbits);
         while(unvisited.size() > 0) {
@@ -128,13 +125,20 @@ public class PlanFragment extends Fragment {
 
 
 
+
         Map<String, String> exhibitToStreet = new HashMap<>();
-        Map<String, Integer> exhibitToDistance = new HashMap<>();
+        Map<Exhibit, Integer> exhibitToDistanceMap = new HashMap<>();
 
         //Gets the map of exhibit keys to their street string for value to the key
         exhibitToStreet = getStreetFromExhibit(fullPath, placesList, streetIdMap);
         //Gets the map of exhibit keys to their distance from the entrance along the path
-        exhibitToDistance = getDistanceFromExhibit(fullPath);
+
+        Map<String, Places> placesMap = placesList.stream().collect(Collectors.toMap(places -> places.id_name, places -> places));
+        exhibitToDistanceMap = getDistanceFromExhibit(fullPath, exhibitMap);
+
+        List<PlacesWithDistance> placesdispList = convertMapToExhibandDist(exhibitToDistanceMap);
+
+
 
         recyclerView = rootView.findViewById(R.id.plan_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -145,11 +149,25 @@ public class PlanFragment extends Fragment {
         //Everytime the number of planned exhibits changes, we update the textview
         liveSize.observe(this.getViewLifecycleOwner(), num -> setSizeText(num));
 
+
         //Set the counter that shows the num of planned exhibits
         counter = rootView.findViewById(R.id.num_exhibits_textview);
         counter.setText(String.valueOf(adapter.getItemCount()));
 
 
+        adapter.setSearchItem(placesdispList);
+
+    }
+
+    static List<PlacesWithDistance> convertMapToExhibandDist(Map<Exhibit, Integer> convertMap) {
+        return convertMap.entrySet().stream().map(stringExhibitEntry -> {
+            Exhibit key = stringExhibitEntry.getKey();
+            int value = stringExhibitEntry.getValue();
+            return new PlacesWithDistance(
+                    key,
+                    value
+            );
+        }).collect(Collectors.toList());
 
     }
 
@@ -169,12 +187,12 @@ public class PlanFragment extends Fragment {
         return bank;
     }
 
-    public Map<String, Integer> getDistanceFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath) {
-        Map<String, Integer> bank = new HashMap<>();
+    public Map<Exhibit, Integer> getDistanceFromExhibit(List<GraphPath<String, IdentifiedWeightedEdge>> fullPath, Map<String, Exhibit> exhibitMap) {
+        Map<Exhibit, Integer> bank = new HashMap<>();
         int total = 0;
         for(int i = 0; i < fullPath.size(); i++) {
             total += fullPath.get(i).getWeight();
-            bank.put(fullPath.get(i).getEndVertex(), total);
+            bank.put(exhibitMap.get(fullPath.get(i).getEndVertex()), total);
         }
 
         return bank;

@@ -67,7 +67,7 @@ public class Exhibit {
     @ColumnInfo(name = "name")
     @SerializedName("name")
     @NonNull
-    public final String name;
+    public String name;
 
     @ColumnInfo(name = "tags")
     @SerializedName("tags")
