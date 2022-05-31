@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 
 import org.jgrapht.Graph;
+import org.w3c.dom.Text;
 
 public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> {
     public List<Places> searchItem = Collections.emptyList();
@@ -30,6 +31,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
         this.onClearClicked = onClearClicked;
     }
 
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,6 +42,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setSearchItem(searchItem.get(position));
+        //holder.setSearchItem();
     }
 
     @Override
@@ -56,10 +59,14 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
         private final TextView textView;
         private Button clearButton;
         private Places places;
+        private TextView street_name;
+        private TextView distance;
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             this.textView = itemView.findViewById(R.id.search_items);
             this.clearButton = itemView.findViewById(R.id.plan_clr_bttn);
+            this.street_name = itemView.findViewById(R.id.exhibit_street_name);
+            this.distance = itemView.findViewById(R.id.plan_exhibit_dist);
 
             this.clearButton.setOnClickListener(view -> {
                 if(onClearClicked == null) return;
@@ -72,6 +79,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
             this.places = searchItem;
             this.textView.setText(searchItem.name);
         }
+
 
 
     }

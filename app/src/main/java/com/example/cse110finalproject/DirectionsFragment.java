@@ -87,7 +87,7 @@ public class DirectionsFragment extends Fragment {
         adapter = new DirectionsAdapter();
         List<Places> plannedPlaces = viewModel.getPlannedPlaces();
 
-        //Load kist of exhibits from new json
+        //Load list of exhibits from new json
         Reader exhibitsReader = null;
         Reader trailsReader = null;
         try {
@@ -230,7 +230,7 @@ public class DirectionsFragment extends Fragment {
 
         PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
         GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path);
+        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
         adapter.setDiretionsItems(edgeDispInfoList);
         if(visited_all!=true) {
             current = placesIdMap.get(path.getEndVertex());
@@ -309,7 +309,7 @@ public class DirectionsFragment extends Fragment {
      * @param path
      * @return
      */
-    public List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, IdentifiedWeightedEdge> streetIdMap) {
+    public static List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
         List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
 
         String current = path.getStartVertex();
@@ -318,33 +318,22 @@ public class DirectionsFragment extends Fragment {
         for(IdentifiedWeightedEdge edge: path.getEdgeList()) {
             if(!edge.getSourceStr().equals(current)) {
                 edgeDispInfos.add(new EdgeDispInfo(
-                        placesIdMap.get(edge.getTargetStr()).name,
-                        placesIdMap.get(edge.getSourceStr()).name,
+                        exhibitMap.get(edge.getTargetStr()).name,
+                        exhibitMap.get(edge.getSourceStr()).name,
                         streetIdMap.get(edge.getId()),
                         String.valueOf(edge.getWeight())));
+                current = edge.getSourceStr();
             } else {
                 edgeDispInfos.add(new EdgeDispInfo(
-                        placesIdMap.get(edge.getSourceStr()).name,
-                        placesIdMap.get(edge.getTargetStr()).name,
+                        exhibitMap.get(edge.getSourceStr()).name,
+                        exhibitMap.get(edge.getTargetStr()).name,
                         streetIdMap.get(edge.getId()),
                         String.valueOf(edge.getWeight())));
-
+                current = edge.getTargetStr();
             }
 
-
-
         }
-
-
-
-        return path.getEdgeList().stream().map(edge -> {
-            return new EdgeDispInfo(
-                    placesIdMap.get(edge.getSourceStr()).name,
-                    placesIdMap.get(edge.getTargetStr()).name,
-                    streetIdMap.get(edge.getId()),
-                    String.valueOf(edge.getWeight()));
-        }).collect(Collectors.toList());
-
+        return edgeDispInfos;
 
     }
 
