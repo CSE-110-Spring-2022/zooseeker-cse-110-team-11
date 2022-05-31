@@ -114,15 +114,25 @@ public class PlanViewModel extends AndroidViewModel {
 
         placesdispList = convertMapToExhibandDist(exhibitToDistanceMap);
 
-//        for(PlacesWithDistance placesWithDistance: placesdispList) {
-//            if(placesWithDistance.placesInGroup!=null&&!placesWithDistance.placesInGroup.isEmpty()) {
-//                placesdispList.remove(placesWithDistance);
-//                for(Places place :placesWithDistance.placesInGroup) {
-//                    placesdispList.add(new PlacesWithDistance())
-//                }
-//
-//            }
-//        }
+
+
+        //Add all sub exhibits as their own entries and remove groups
+        for(PlacesWithDistance placesWithDistance: placesdispList) {
+            if(exhibitGroupsWithChildren.containsKey(placesWithDistance.id_name)) {
+                placesWithDistance.placesInGroup=exhibitGroupsWithChildren.get(placesWithDistance.id_name);
+            } else {
+                placesWithDistance.placesInGroup=null;
+            }
+            if(placesWithDistance.placesInGroup!=null&&!placesWithDistance.placesInGroup.isEmpty()) {
+                //Remove the group
+                placesdispList.remove(placesWithDistance);
+
+                //Add all sub exhibits as their own entries
+                for(Exhibit place :placesWithDistance.placesInGroup) {
+                    placesdispList.add(new PlacesWithDistance(place, placesWithDistance.distanceFromEntrance));
+                }
+            }
+        }
 
 
         placesdispList.sort((placesAndDist1, placesAndDist2) -> {

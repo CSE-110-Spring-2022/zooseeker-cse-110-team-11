@@ -84,7 +84,9 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
 }
 class PlacesWithDistance extends Places {
     int distanceFromEntrance;
-    List<Places> placesInGroup;
+
+
+    List<Exhibit> placesInGroup;
 
     PlacesWithDistance(Exhibit exhibit, int distanceFromEntrance) {
         super(exhibit.id, ZooData.VertexInfo.Kind.EXHIBIT, true, exhibit.name, null);
@@ -96,11 +98,11 @@ class PlacesWithDistance extends Places {
         super(id_name, kind, checked, name, tags);
     }
 
-    public List<Places> getPlacesInGroup() {
+    public List<Exhibit> getExhibitInGroup() {
         return placesInGroup;
     }
 
-    public void setPlacesInGroup(List<Places> placesInGroup) {
+    public void setPlacesInGroup(List<Exhibit> placesInGroup) {
         this.placesInGroup = placesInGroup;
     }
 
