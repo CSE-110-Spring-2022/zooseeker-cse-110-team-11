@@ -313,7 +313,7 @@ public class DirectionsFragment extends Fragment {
      * Skip Buttons Functionality
      */
     public void skip(){
-        if(unvisitedExhbits.size() == 2){
+        if(unvisitedExhbits.size() == 1){
             nextDirections();
         }
         else{
