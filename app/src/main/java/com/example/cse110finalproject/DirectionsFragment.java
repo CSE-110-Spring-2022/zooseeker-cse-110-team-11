@@ -1,5 +1,6 @@
 package com.example.cse110finalproject;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -15,7 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -32,6 +36,16 @@ import java.util.stream.Collectors;
 
 
 public class DirectionsFragment extends Fragment {
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+
+    private TextView directionsSettings;
+    private CheckBox briefDirectionsCheck, detailedDirectionsCheck;
+    private Button goBack;
+    private ImageButton goTo;
+
+    //true is brief directions, false is detailed directions
+    boolean directions_settings_type = true;
 
     private Map<String, String> streetIdMap;
     private Map<String, Places> placesIdMap;
@@ -119,7 +133,7 @@ public class DirectionsFragment extends Fragment {
                 ZooData.loadVertexInfoJSON(context, "exhibit_info.json");
 
         //Just the vertex values, from the map
-        //We need this to get loaction names from ids
+        //We need this to get location names from ids
         List<ZooData.VertexInfo> exhibitsList = new ArrayList<ZooData.VertexInfo>(exhibitsMap.values());
 
         //We need this in order to get the street names from the edge_ids
@@ -155,6 +169,10 @@ public class DirectionsFragment extends Fragment {
         // Setup previous button
         Button prebtn = getView().findViewById(R.id.previous_button);
         prebtn.setOnClickListener(view1 -> previousDirections());
+
+        // Setup direction settings button
+        goTo = getView().findViewById(R.id.directions_settings_btn);
+        goTo.setOnClickListener(view1 -> createNewSettingsDialog());
 
         // Start showing directions
         if(unvisited.size()>1) {
@@ -415,6 +433,42 @@ public class DirectionsFragment extends Fragment {
         }
         return edgeDispInfos;
 
+    }
+
+    public void createNewSettingsDialog(){
+        dialogBuilder = new AlertDialog.Builder(getContext());
+
+        final View settingsPopupView = getLayoutInflater().inflate(R.layout.settings_popup,null);
+        briefDirectionsCheck = settingsPopupView.findViewById(R.id.briefDirectionsCheck);
+        detailedDirectionsCheck = settingsPopupView.findViewById(R.id.detailedDirectionsCheck);
+        goBack = settingsPopupView.findViewById(R.id.goBackBtn);
+
+        dialogBuilder.setView(settingsPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        briefDirectionsCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                detailedDirectionsCheck.setChecked(false);
+                directions_settings_type = true;
+            }
+        });
+
+        detailedDirectionsCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                briefDirectionsCheck.setChecked(false);
+                directions_settings_type = false;
+            }
+        });
+
+        goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
 }
