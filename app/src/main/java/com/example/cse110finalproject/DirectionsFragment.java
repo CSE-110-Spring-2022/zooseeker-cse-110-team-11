@@ -189,7 +189,7 @@ public class DirectionsFragment extends Fragment {
             if(exhibit.hasGroup()) {
                 String exhibitGroupid = exhibit.groupId;
                 //If we already have the group, just add this as a child to keep track of it
-                if(exhibitNeedToVisit.contains(exhibit)) {
+                if(exhibitNeedToVisit.contains(exhibitMap.get(exhibitGroupid))) {
                     exhibitGroupsWithChildren.get(exhibitGroupid).add(exhibit);
                 }
                 //Otherwise we add the group to the group map
