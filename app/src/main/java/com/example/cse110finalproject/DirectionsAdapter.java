@@ -14,7 +14,7 @@ import java.util.List;
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
     private List<EdgeDispInfo> searchItem = Collections.emptyList();
 
-    public void setDiretionsItems(List<EdgeDispInfo> searchItem){
+    public void setDirectionsItems(List<EdgeDispInfo> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
@@ -54,14 +54,48 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
 
         public void setSearchItem(EdgeDispInfo searchItem){
             this.searchItem = searchItem;
-            String directionStr;
+            String directionStr,directionStr2;
+
             directionStr = String.format("From %1$s, travel %2$s meters along %3$s to %4$s",
                     searchItem.start,
                     searchItem.distance,
                     searchItem.streetName,
                     searchItem.end
                     );
-            this.textView.setText(directionStr);
+
+            String rStart;
+            String rStart1;
+            String rStart2;
+
+            String rEnd;
+            String rEnd1;
+            String rEnd2;
+
+            if(searchItem.start.contains("/")){
+                rStart1 = searchItem.start.split("/")[0];
+                rStart2 = searchItem.start.split("/")[1];
+                rStart = "the corner of " + rStart1 + "and" + rStart2;
+            }else {
+                rStart = searchItem.start;
+            }
+
+            if(searchItem.end.contains("/")){
+                rEnd1 = searchItem.end.split("/")[0];
+                rEnd2 = searchItem.end.split("/")[1];
+                rEnd = "the corner of " + rEnd1 + "and" + rEnd2;
+            }else {
+                rEnd = searchItem.end;
+            }
+
+            //arka version (following piazza and examples)
+            directionStr2 = String.format("-- From %1$s, proceed on %3$s %2$s ft towards %4$s",
+                    rStart,
+                    searchItem.distance,
+                    searchItem.streetName,
+                    rEnd
+            );
+
+            this.textView.setText(directionStr2);
         }
 
     }
