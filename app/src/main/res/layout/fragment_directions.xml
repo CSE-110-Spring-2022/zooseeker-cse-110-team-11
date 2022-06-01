@@ -124,7 +124,6 @@
         android:layout_marginBottom="32dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Lat"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/previous_button"
         tools:layout_editor_absoluteX="7dp" />
@@ -135,8 +134,8 @@
         android:layout_height="37dp"
         android:layout_marginBottom="4dp"
         android:ems="10"
+        android:hint="Lng"
         android:inputType="textPersonName"
-        android:text="Lng"
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/previous_button"
         tools:layout_editor_absoluteX="7dp" />

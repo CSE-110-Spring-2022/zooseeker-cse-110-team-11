@@ -213,6 +213,7 @@ public class DirectionsFragment extends Fragment {
             Button mockButton = getView().findViewById(R.id.mock_button);
             mockButton.setOnClickListener(view1 -> {
                 onMockCoordinates(latView, lngView);
+                recyclerView.setVisibility(View.VISIBLE);
             }
             );
         }
@@ -325,8 +326,13 @@ public class DirectionsFragment extends Fragment {
             unvisitedExhibits = removeExhibitWithId(unvisitedExhibits, newCurrent.id);
         }
         path = getPath();
-        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
-        adapter.setDiretionsItems(edgeDispInfoList);
+        List<EdgeDispInfo> edgeDispInfoList;
+        if(!directions_settings_type) {
+            edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
+        } else {
+            edgeDispInfoList = convertToBriefDisplay(path, exhibitMap, streetIdMap);
+        }
+        adapter.setDirectionsItems(edgeDispInfoList);
 
 
         // Current Destination where user is headed
