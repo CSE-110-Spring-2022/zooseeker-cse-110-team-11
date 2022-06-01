@@ -53,8 +53,6 @@ public class FragmentsInstrumentedTest {
         //
         planTabTestPlannedExhibitsCounter();
 
-        //Testing clear all
-        clearAllButtonInPlanTab();
 
 
         //Testing that directions are displayed with no exceptions
@@ -85,27 +83,6 @@ public class FragmentsInstrumentedTest {
     }
 
 
-    private void clearAllButtonInPlanTab() {
-//        FragmentScenario<PlanFragment> fragmentScenario2 = FragmentScenario.launchInContainer(PlanFragment.class).onFragment(
-//                planFragment -> {
-//                    Places alligator = new Places("gators", ZooData.VertexInfo.Kind.EXHIBIT,true,"Alligators", "gators");
-//                    Places lions = new Places("lions", ZooData.VertexInfo.Kind.EXHIBIT,true,"Lions", "mammals");
-//                    Places elephant = new Places("elephant_odyssey", ZooData.VertexInfo.Kind.EXHIBIT,true,"Elephant Odyssey", "mammals");
-//
-//                    List<Places> plannedPlacesList = new ArrayList<Places>();
-//                    plannedPlacesList.add(alligator);
-//                    plannedPlacesList.add(lions);
-//                    plannedPlacesList.add(elephant);
-//
-//                    Button clearAll = planFragment.getView().findViewById(R.id.all_clr_bttn);
-//                    planFragment.adapter.searchItem = plannedPlacesList;
-//                    planFragment.adapter.notifyDataSetChanged();
-//                    planFragment.viewModel.setPlannedPlacesList(plannedPlacesList);
-//                    clearAll.callOnClick();
-//                    assert(planFragment.adapter.searchItem.size() == 0);
-//                }
-//        );
-    }
 
     private void searchingForGorillaSearchFragment() {
         FragmentScenario<SearchFragment> scenario = FragmentScenario.launchInContainer(SearchFragment.class).onFragment(
