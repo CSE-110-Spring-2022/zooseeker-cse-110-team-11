@@ -303,12 +303,15 @@ public class DirectionsFragment extends Fragment {
         }
 
     }
+
+    //handles getting the path
     public GraphPath<String, IdentifiedWeightedEdge> getPath(){
         PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhibits));
         GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
         return path;
     }
 
+    //handles Previous Implementation
     public void previousDirections(){
         currentExhibit = previousExhibit;
 
@@ -322,10 +325,6 @@ public class DirectionsFragment extends Fragment {
 
     }
 
-    @NonNull
-    private List<Places> removePlaceWithId(@NonNull List<Places> unvisited,@NonNull String removeid) {
-        return unvisited.stream().filter(places -> !places.id_name.equals(current.id_name)).collect(Collectors.toList());
-    }
     private List<Exhibit> removeExhibitWithId(@NonNull List<Exhibit> unvisited,@NonNull String removeid) {
         return unvisited.stream().filter(places -> !places.id.equals(currentExhibit.id)).collect(Collectors.toList());
     }
@@ -412,11 +411,7 @@ public class DirectionsFragment extends Fragment {
     }
 
 
-    /**
-     * TODO: Fix this to keep proper track of source & destinations
-     * @param path
-     * @return
-     */
+    //Handles converting the direction steps to detailed directions
     public static List<EdgeDispInfo> convertToDetailedDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
         List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
 
@@ -444,6 +439,7 @@ public class DirectionsFragment extends Fragment {
         return edgeDispInfos;
     }
 
+    //Handles converting the direction steps to brief directions
     public static List<EdgeDispInfo> convertToBriefDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
         List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
 
@@ -502,6 +498,7 @@ public class DirectionsFragment extends Fragment {
         return edgeDispInfos;
     }
 
+    //handles Direction settings dialog
     public void createNewSettingsDialog(){
         dialogBuilder = new AlertDialog.Builder(getContext());
 

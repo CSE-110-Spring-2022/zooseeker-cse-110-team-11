@@ -94,11 +94,11 @@ public class PlanViewModel extends AndroidViewModel {
             unvisited.remove(sp.getEndVertex());
             current = sp.getEndVertex();
         }
-        unvisited.add("entrance_exit_gate");
+        /*unvisited.add("entrance_exit_gate");
         PathCalculator calculator = new PathCalculator(graph, current, unvisited);
         GraphPath<String, IdentifiedWeightedEdge> sp = calculator.smallestPath();
         fullPath.add(sp);
-        unvisited.remove(sp.getEndVertex());
+        unvisited.remove(sp.getEndVertex());*/
 
 
         Map<String, String> exhibitToStreet = new HashMap<>();
