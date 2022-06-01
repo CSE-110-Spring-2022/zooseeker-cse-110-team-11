@@ -14,7 +14,7 @@ import java.util.List;
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
     private List<EdgeDispInfo> searchItem = Collections.emptyList();
 
-    public void setDiretionsItems(List<EdgeDispInfo> searchItem){
+    public void setDirectionsItems(List<EdgeDispInfo> searchItem){
         this.searchItem.clear();
         this.searchItem = searchItem;
         notifyDataSetChanged();
