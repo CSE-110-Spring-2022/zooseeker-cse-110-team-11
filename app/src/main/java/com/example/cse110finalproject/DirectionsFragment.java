@@ -249,17 +249,29 @@ public class DirectionsFragment extends Fragment {
                 unvisitedExhibits.add(entranceExitExhibit);
 
                 GraphPath<String, IdentifiedWeightedEdge> path = getPath();
-                List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
+                List<EdgeDispInfo> edgeDispInfoList;
+                if(!directions_settings_type){
+                    edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
+
+                }else{
+                    edgeDispInfoList = convertToBriefDisplay(path, exhibitMap, streetIdMap);
+                }
                 previousExhibit = currentExhibit;
                 currentExhibit = exhibitMap.get(path.getEndVertex());
-                adapter.setDiretionsItems(edgeDispInfoList);
+                adapter.setDirectionsItems(edgeDispInfoList);
                 final_directions = true;
             }
             else{
                 // Calculate the next closest exhibit
                 GraphPath<String, IdentifiedWeightedEdge> path = getPath();
-                List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
-                adapter.setDiretionsItems(edgeDispInfoList);
+                List<EdgeDispInfo> edgeDispInfoList;
+                if(!directions_settings_type){
+                    edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
+
+                }else{
+                    edgeDispInfoList = convertToBriefDisplay(path, exhibitMap, streetIdMap);
+                }
+                adapter.setDirectionsItems(edgeDispInfoList);
 
                 // Current Destination where user is headed
                 previousExhibit = currentExhibit;
@@ -403,12 +415,10 @@ public class DirectionsFragment extends Fragment {
      * @param path
      * @return
      */
-    public static List<EdgeDispInfo> convertToDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
+    public static List<EdgeDispInfo> convertToDetailedDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
         List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
 
         String current = path.getStartVertex();
-
-        System.out.println(path.getEdgeList());
 
         for(IdentifiedWeightedEdge edge: path.getEdgeList()) {
             if(!edge.getSourceStr().equals(current)) {
@@ -429,29 +439,65 @@ public class DirectionsFragment extends Fragment {
 
         }
 
+        return edgeDispInfos;
+    }
+
+    public static List<EdgeDispInfo> convertToBriefDisplay(GraphPath<String,IdentifiedWeightedEdge> path, Map<String, Exhibit> exhibitMap, Map<String, String> streetIdMap) {
+        List<EdgeDispInfo> edgeDispInfos = new ArrayList<>();
+
+        String current = path.getStartVertex();
+
         List<IdentifiedWeightedEdge> pathEdges = path.getEdgeList();
 
-        /*for(int i=0; i<pathEdges.size();i++){
-
+        for(int i=0; i<pathEdges.size();i++){
             if(!pathEdges.get(i).getSourceStr().equals(current)) {
-                edgeDispInfos.add(new EdgeDispInfo(
-                        exhibitMap.get(pathEdges.get(i).getTargetStr()).name,
-                        exhibitMap.get(pathEdges.get(i).getSourceStr()).name,
-                        streetIdMap.get(pathEdges.get(i).getId()),
-                        String.valueOf(pathEdges.get(i).getWeight())));
+                if(i>0 && streetIdMap.get(pathEdges.get(i-1).getId()).equals(streetIdMap.get(pathEdges.get(i).getId()))){
+                    EdgeDispInfo last = edgeDispInfos.remove(edgeDispInfos.size()-1);
+                    edgeDispInfos.add(new EdgeDispInfo(
+                                    last.start,
+                                    exhibitMap.get(pathEdges.get(i).getSourceStr()).name,
+                                    streetIdMap.get(pathEdges.get(i).getId()),
+                                    String.valueOf(Double.valueOf(last.distance) + pathEdges.get(i).getWeight())
+                            )
+                    );
+                }
+                else{
+                    edgeDispInfos.add(new EdgeDispInfo(
+                                    exhibitMap.get(pathEdges.get(i).getTargetStr()).name,
+                                    exhibitMap.get(pathEdges.get(i).getSourceStr()).name,
+                                    streetIdMap.get(pathEdges.get(i).getId()),
+                                    String.valueOf(pathEdges.get(i).getWeight())
+                            )
+                    );
+                }
                 current = pathEdges.get(i).getSourceStr();
             }
             else {
-                edgeDispInfos.add(new EdgeDispInfo(
-                        exhibitMap.get(pathEdges.get(i).getSourceStr()).name,
-                        exhibitMap.get(pathEdges.get(i).getTargetStr()).name,
-                        streetIdMap.get(pathEdges.get(i).getId()),
-                        String.valueOf(pathEdges.get(i).getWeight())));
+                if(i>0 && streetIdMap.get(pathEdges.get(i-1).getId()).equals(streetIdMap.get(pathEdges.get(i).getId()))){
+                    EdgeDispInfo last = edgeDispInfos.remove(edgeDispInfos.size()-1);
+                    edgeDispInfos.add(new EdgeDispInfo(
+                                    last.start,
+                                    exhibitMap.get(pathEdges.get(i).getTargetStr()).name,
+                                    streetIdMap.get(pathEdges.get(i).getId()),
+                                    String.valueOf(Double.valueOf(last.distance) + pathEdges.get(i).getWeight())
+                            )
+                    );
+                }
+                else{
+                    edgeDispInfos.add(new EdgeDispInfo(
+                                    exhibitMap.get(pathEdges.get(i).getSourceStr()).name,
+                                    exhibitMap.get(pathEdges.get(i).getTargetStr()).name,
+                                    streetIdMap.get(pathEdges.get(i).getId()),
+                                    String.valueOf(pathEdges.get(i).getWeight())
+                            )
+                    );
+                }
+
                 current = pathEdges.get(i).getTargetStr();
             }
-        }*/
-        return edgeDispInfos;
+        }
 
+        return edgeDispInfos;
     }
 
     public void createNewSettingsDialog(){
@@ -460,6 +506,11 @@ public class DirectionsFragment extends Fragment {
         final View settingsPopupView = getLayoutInflater().inflate(R.layout.settings_popup,null);
         briefDirectionsCheck = settingsPopupView.findViewById(R.id.briefDirectionsCheck);
         detailedDirectionsCheck = settingsPopupView.findViewById(R.id.detailedDirectionsCheck);
+        if(directions_settings_type){
+            briefDirectionsCheck.setChecked(true);
+        }else{
+            detailedDirectionsCheck.setChecked(true);
+        }
         goBack = settingsPopupView.findViewById(R.id.goBackBtn);
 
         dialogBuilder.setView(settingsPopupView);
@@ -485,6 +536,16 @@ public class DirectionsFragment extends Fragment {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
+                List<EdgeDispInfo> edgeDispInfoList;
+
+                if(!directions_settings_type){
+                    edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
+
+                }else{
+                    edgeDispInfoList = convertToBriefDisplay(path, exhibitMap, streetIdMap);
+                }
+                adapter.setDirectionsItems(edgeDispInfoList);
                 dialog.dismiss();
             }
         });
