@@ -1,5 +1,7 @@
 package com.example.cse110finalproject;
 
+import android.util.Pair;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
+import java.util.Locale;
 
 @Entity(tableName = "exhibits")
 public class Exhibit {
@@ -37,6 +40,29 @@ public class Exhibit {
         gson.toJson(infos, type, writer);
         writer.flush();
         writer.close();
+
+    }
+    public Pair<Double, Double> getCoords() {
+        return Pair.create(lat, lng);
+    }
+
+    public String getCoordString() {
+        var coords = getCoords();
+        return String.format(Locale.getDefault(), "%3.6f, %3.6f", coords.first, coords.second);
+    }
+
+    public boolean isCloseTo(Pair<Double, Double> otherCoords) {
+        return isCloseTo(otherCoords, 0.001);
+    }
+    public boolean isCloseTo(Pair<Double, Double> otherCoords, double delta) {
+        var coords = getCoords();
+        if (coords == null
+                || otherCoords == null
+                || coords.first == null || coords.second == null
+                || otherCoords.first == null || otherCoords.second == null) return false;
+        var dLat = coords.first - otherCoords.first;
+        var dLng = coords.second - otherCoords.second;
+        return Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLng, 2)) < delta;
     }
 
     public enum Kind {
