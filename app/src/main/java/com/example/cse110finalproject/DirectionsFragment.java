@@ -68,6 +68,7 @@ public class DirectionsFragment extends Fragment {
     private Exhibit nextExhibit;
     private Exhibit entranceExitExhibit;
     private Map<String, Exhibit> exhibitMap;
+    GraphPath<String, IdentifiedWeightedEdge> prevPath;
 
 
     /**
@@ -264,6 +265,7 @@ public class DirectionsFragment extends Fragment {
             else{
                 // Calculate the next closest exhibit
                 GraphPath<String, IdentifiedWeightedEdge> path = getPath();
+                prevPath = path;
                 List<EdgeDispInfo> edgeDispInfoList;
                 if(!directions_settings_type){
                     edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
@@ -536,14 +538,13 @@ public class DirectionsFragment extends Fragment {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
                 List<EdgeDispInfo> edgeDispInfoList;
 
                 if(!directions_settings_type){
-                    edgeDispInfoList = convertToDetailedDisplay(path, exhibitMap, streetIdMap);
+                    edgeDispInfoList = convertToDetailedDisplay(prevPath, exhibitMap, streetIdMap);
 
                 }else{
-                    edgeDispInfoList = convertToBriefDisplay(path, exhibitMap, streetIdMap);
+                    edgeDispInfoList = convertToBriefDisplay(prevPath, exhibitMap, streetIdMap);
                 }
                 adapter.setDirectionsItems(edgeDispInfoList);
                 dialog.dismiss();
