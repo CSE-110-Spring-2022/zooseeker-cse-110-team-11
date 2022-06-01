@@ -72,6 +72,12 @@ public class PlanFragment extends Fragment {
         viewModel = new ViewModelProvider(this)
                 .get(PlanViewModel.class);
 
+        //Load in only the planned exhibits
+        List<Places> placesList = viewModel.getPlannedPlaces();
+
+        if(!placesList.isEmpty()) {
+            viewModel.processPlacesIntoDisplayList(getContext());
+        }
         adapter = new PlanListAdapter();
         adapter.setDeletePlannedPlace(viewModel::deletePlaces);
 
@@ -81,8 +87,7 @@ public class PlanFragment extends Fragment {
             adapter.notifyDataSetChanged();
         });
 
-        //Load in only the planned exhibits
-        List<Places> placesList = viewModel.getPlannedPlaces();
+
 
         //Load list of exhibits from new json
         Context context = getContext();
