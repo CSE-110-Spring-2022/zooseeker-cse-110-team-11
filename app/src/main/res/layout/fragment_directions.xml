@@ -11,22 +11,22 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/directionsRecyclerView"
-        android:layout_width="415dp"
-        android:layout_height="425dp"
+        android:layout_width="389dp"
+        android:layout_height="412dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.581" />
+        app:layout_constraintVertical_bias="0.579" />
 
     <Button
         android:id="@+id/next_button"
         android:layout_width="92dp"
         android:layout_height="60dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="16dp"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,8 +37,8 @@
         android:id="@+id/skip_button"
         android:layout_width="92dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="16dp"
         android:text="Skip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -47,22 +47,24 @@
         android:id="@+id/previous_button"
         android:layout_width="110dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="284dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginBottom="16dp"
         android:text="Previous"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directionsRecyclerView"
-        app:layout_constraintVertical_bias="0.462" />
+        app:layout_constraintEnd_toStartOf="@+id/skip_button"
+        app:layout_constraintHorizontal_bias="0.645"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/current_dest_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Current Destination:"
+        android:textColor="#000000"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.089" />
@@ -72,10 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next Destination:"
+        android:textColor="#000000"
+
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.089" />
@@ -87,7 +91,7 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.138"
+        app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.131" />
@@ -99,7 +103,7 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.884"
+        app:layout_constraintHorizontal_bias="0.959"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.131" />

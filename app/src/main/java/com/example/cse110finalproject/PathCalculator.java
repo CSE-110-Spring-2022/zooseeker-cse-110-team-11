@@ -1,5 +1,7 @@
 package com.example.cse110finalproject;
 
+import android.util.Log;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -30,6 +32,8 @@ public class PathCalculator {
         for(String dest : needVisit){
             GraphPath<String, IdentifiedWeightedEdge> shortest = DijkstraShortestPath.findPathBetween(graph ,curr, dest);
             answer.add(shortest);
+            System.out.println("#&*@$&(@#*&$(*@#&(*$&(*@#$*&@#*$@#$#Q$");
+            System.out.println(shortest);
         }
 
         return answer;
