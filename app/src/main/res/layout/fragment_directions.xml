@@ -11,15 +11,16 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/directionsRecyclerView"
-        android:layout_width="389dp"
-        android:layout_height="412dp"
+        android:layout_width="0dp"
+        android:layout_height="399dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.375"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.579" />
+        app:layout_constraintVertical_bias="0.47000003" />
 
     <Button
         android:id="@+id/next_button"
@@ -45,15 +46,13 @@
 
     <Button
         android:id="@+id/previous_button"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_marginStart="17dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:text="Previous"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/skip_button"
-        app:layout_constraintHorizontal_bias="0.645"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/skip_button" />
 
     <TextView
         android:id="@+id/current_dest_label"
@@ -117,4 +116,38 @@
         android:src="@android:drawable/ic_menu_preferences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/latTextView"
+        android:layout_width="222dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Lat"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/previous_button"
+        tools:layout_editor_absoluteX="7dp" />
+
+    <EditText
+        android:id="@+id/lngTextView"
+        android:layout_width="222dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="4dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Lng"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/previous_button"
+        tools:layout_editor_absoluteX="7dp" />
+
+    <Button
+        android:id="@+id/mock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="52dp"
+        android:layout_marginBottom="13dp"
+        android:text="Mock"
+        app:layout_constraintBottom_toTopOf="@+id/next_button"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,8 @@ public class DirectionsFragment extends Fragment {
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
 
+    private AlertDialog mockingDialog;
+
     private TextView directionsSettings;
     private CheckBox briefDirectionsCheck, detailedDirectionsCheck;
     private Button goBack;
@@ -75,6 +77,8 @@ public class DirectionsFragment extends Fragment {
 
     MutableLiveData<Pair<Double, Double>>  currCoordinates;
     private GraphPath<String, IdentifiedWeightedEdge> path;
+    private EditText latView;
+    private EditText lngView;
 
     /**
      * @param inflater
@@ -187,12 +191,49 @@ public class DirectionsFragment extends Fragment {
             nextDirections();
         }
 
+        {
+            //Setup Mocking Event
+            latView = getView().findViewById(R.id.latTextView);
+            lngView = getView().findViewById(R.id.lngTextView);
+            latView.setOnFocusChangeListener((viewVar, hasFoucus) -> {
+                if(hasFoucus) {
+                    recyclerView.setVisibility(View.INVISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            });
+            lngView.setOnFocusChangeListener((viewVar, hasFoucus) -> {
+                if(hasFoucus) {
+                    recyclerView.setVisibility(View.INVISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            });
+            Button mockButton = getView().findViewById(R.id.mock_button);
+            mockButton.setOnClickListener(view1 -> {
+                onMockCoordinates(latView, lngView);
+            }
+            );
+        }
+
+
         //Set current location incase we haven't setup live feed
         currCoordinates = new MutableLiveData<Pair<Double, Double>>();
         currCoordinates.setValue(new Pair<>(32.73459618734685, -117.14936));
         currCoordinates.observe(getViewLifecycleOwner(), doublePair -> {
             onCoordinatesChanged(doublePair, path);
         });
+    }
+
+    /**
+     * When coordinates are mocked, update the current coordinates
+     * @param latView
+     * @param lngView
+     */
+    void onMockCoordinates(EditText latView, EditText lngView) {
+        double lat = Double.parseDouble(latView.getText().toString());
+        double lng = Double.parseDouble(lngView.getText().toString());
+        currCoordinates.setValue(Pair.create(lat,lng));
     }
 
 
@@ -278,9 +319,9 @@ public class DirectionsFragment extends Fragment {
         boolean exhibitWasPlanned=false;
 
         //Remove The new location if it was part of the plan
-        if(unvisitedExhbits.contains(newCurrent)) {
+        if(unvisitedExhibits.contains(newCurrent)) {
             exhibitWasPlanned=true;
-            unvisitedExhbits = removeExhibitWithId(unvisitedExhibits, newCurrent.id);
+            unvisitedExhibits = removeExhibitWithId(unvisitedExhibits, newCurrent.id);
         }
         path = getPath();
         List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
@@ -517,6 +558,8 @@ public class DirectionsFragment extends Fragment {
         return edgeDispInfos;
 
     }
+
+
 
     public void createNewSettingsDialog(){
         dialogBuilder = new AlertDialog.Builder(getContext());
