@@ -6,17 +6,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -56,6 +60,8 @@ public class DirectionsFragment extends Fragment {
     private Exhibit entranceExitExhibit;
     private Map<String, Exhibit> exhibitMap;
 
+    MutableLiveData<Pair<Double, Double>>  currCoordinates;
+    private GraphPath<String, IdentifiedWeightedEdge> path;
 
     /**
      * @param inflater
@@ -161,6 +167,39 @@ public class DirectionsFragment extends Fragment {
             unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
             nextDirections();
         }
+
+        //Set current location incase we haven't setup live feed
+        currCoordinates = new MutableLiveData<Pair<Double, Double>>();
+        currCoordinates.setValue(new Pair<>(32.73459618734685, -117.14936));
+        currCoordinates.observe(getViewLifecycleOwner(), doublePair -> {
+            onCoordinatesChanged(doublePair, path);
+        });
+    }
+
+
+    void onCoordinatesChanged(Pair<Double, Double> coordinates, GraphPath<String, IdentifiedWeightedEdge> path) {
+        double lat = coordinates.first;
+        double lng = coordinates.second;
+
+        //Check if we are close to an exhibit not in the current path and not closer to a planned one
+        path.getVertexList();
+
+        //Get the exhibits that are not on the current path which you should be near
+        List<Exhibit> exhibitsOnPath = path.getVertexList().stream().map(id -> exhibitMap.get(id)).collect(Collectors.toList());
+        List<Exhibit> exhibitsNotOnPath = exhibitMap.values().stream().filter(exhibit -> !exhibitsOnPath.contains(exhibit)).collect(Collectors.toList());
+
+        //Check if you are near an exhibit not on the current path
+        for(Exhibit exhibit: exhibitsNotOnPath) {
+            if(exhibit.isCloseTo(coordinates)) {
+                //Make new plans with "exhibit" as current exhibit
+                //Don't remove current from unvisited
+                replanFromNewCurrent(exhibit);
+                break;
+            }
+        }
+
+
+
     }
 
     /**
@@ -214,6 +253,31 @@ public class DirectionsFragment extends Fragment {
 
     }
 
+    void replanFromNewCurrent(Exhibit newCurrent) {
+
+        currentExhibit = newCurrent;
+        boolean exhibitWasPlanned=false;
+
+        //Remove The new location if it was part of the plan
+        if(unvisitedExhbits.contains(newCurrent)) {
+            exhibitWasPlanned=true;
+            unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, newCurrent.id);
+        }
+        path = getPath();
+        List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
+        adapter.setDiretionsItems(edgeDispInfoList);
+
+
+        // Current Destination where user is headed
+        if(exhibitWasPlanned) previousExhibit = currentExhibit;
+
+        currentExhibit = exhibitMap.get(path.getEndVertex());
+
+        // Display Current and Next Destination
+        setNextCurrent();
+        enablePrevious(true);
+
+    }
 
     /**
      * Changes screen to display directions to the next planned exhibit
@@ -230,7 +294,7 @@ public class DirectionsFragment extends Fragment {
                 unvisitedExhbits = removeExhibitWithId(unvisitedExhbits, currentExhibit.id);
                 unvisitedExhbits.add(entranceExitExhibit);
 
-                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
+                path = getPath();
                 List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
                 previousExhibit = currentExhibit;
                 currentExhibit = exhibitMap.get(path.getEndVertex());
@@ -243,7 +307,7 @@ public class DirectionsFragment extends Fragment {
             }
             else{
                 // Calculate the next closest exhibit
-                GraphPath<String, IdentifiedWeightedEdge> path = getPath();
+                path = getPath();
                 List<EdgeDispInfo> edgeDispInfoList = convertToDisplay(path, exhibitMap, streetIdMap);
                 adapter.setDiretionsItems(edgeDispInfoList);
 
@@ -277,14 +341,14 @@ public class DirectionsFragment extends Fragment {
     }
     public GraphPath<String, IdentifiedWeightedEdge> getPath(){
         PathCalculator calculator = new PathCalculator(graph, currentExhibit.id, getIdsListFromExhibits(unvisitedExhbits));
-        GraphPath<String, IdentifiedWeightedEdge> path = calculator.smallestPath();
+        path = calculator.smallestPath();
         return path;
     }
 
     public void previousDirections(){
         currentExhibit = previousExhibit;
 
-        GraphPath<String, IdentifiedWeightedEdge> path = getPath();
+        path = getPath();
         nextExhibit = exhibitMap.get(path.getEndVertex());
         setNextCurrent();
         enablePrevious(false);
